@@ -52,5 +52,21 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(repository.buscarPorAnimalId(novoAnimal())).isEmpty();
     }
 
+    @Test
+    void salvar_atendimentoMinimo_persisteComCamposNulos() {
+        Atendimento original = Atendimento.abrirProntoAtendimento(novoAnimal());
+        repository.salvar(original);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(original.getId());
+
+        assertThat(lido.getId()).isEqualTo(original.getId());
+        assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.EM_ANDAMENTO);
+        assertThat(lido.getAgendamentoId()).isNull();
+        assertThat(lido.getSinaisVitais()).isNull();
+        assertThat(lido.getAnamnese()).isNull();
+        assertThat(lido.getDiagnosticos()).isEmpty();
+        assertThat(lido.getPrescricoes()).isEmpty();
+        assertThat(lido.getExames()).isEmpty();
+    }
 }
 
