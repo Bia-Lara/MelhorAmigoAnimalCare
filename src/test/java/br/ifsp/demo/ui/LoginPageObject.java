@@ -2,11 +2,13 @@ package br.ifsp.demo.ui;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class LoginPageObject extends BaseSeleniumTest{
     private final By emailInput = By.name("email");
@@ -43,5 +45,15 @@ public class LoginPageObject extends BaseSeleniumTest{
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(loginButton))
                 .click();
+    }
+
+    public List<String> fieldErrorMessages(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(fieldErrors));
+
+        return driver.findElements(fieldErrors)
+                .stream()
+                .map(WebElement::getText)
+                .toList();
     }
 }
