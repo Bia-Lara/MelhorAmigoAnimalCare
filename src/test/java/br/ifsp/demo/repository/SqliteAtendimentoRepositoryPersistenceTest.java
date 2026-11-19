@@ -122,5 +122,15 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(contar("atendimento")).isEqualTo(3);
     }
+
+    @Test
+    void salvar_concluidoMaisNovoEmAndamentoParaMesmoAnimal_ePermitido() {
+        AnimalId animal = novoAnimal();
+        repository.salvar(atendimento(animal, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1), null));
+        repository.salvar(emAndamento(animal));
+
+        assertThat(repository.buscarPorAnimalId(animal)).hasSize(2);
+    }
 }
 
