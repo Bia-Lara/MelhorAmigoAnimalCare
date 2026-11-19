@@ -56,4 +56,10 @@ public class LoginPageObject extends BaseSeleniumTest{
                 .map(WebElement::getText)
                 .toList();
     }
+
+    public String loginErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(loginError))
+                .getText();
+    }
 }
