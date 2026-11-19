@@ -23,7 +23,7 @@ public class LoginPageObject extends BasePageObject{
     }
 
     public void openLoginPage(){
-        driver.get("https://localhost:5173/login");
+        driver.get("http://localhost:5173/login");
     }
 
     public void authenticate(String email, String password){
@@ -33,7 +33,7 @@ public class LoginPageObject extends BasePageObject{
 
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(passwordInput))
-                .sendKeys(email);
+                .sendKeys(password);
 
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(loginButton))
