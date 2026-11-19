@@ -101,5 +101,17 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 .isInstanceOf(UncategorizedSQLException.class)
                 .hasMessageContaining("UNIQUE constraint failed");
     }
+
+    @Test
+    void salvar_doisAtendimentosParaMesmoAgendamento_violaUnicidade() {
+        AgendamentoId agendamento = AgendamentoId.of(UUID.randomUUID());
+        repository.salvar(atendimento(novoAnimal(), StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, agendamento));
+
+        assertThatThrownBy(() -> repository.salvar(atendimento(novoAnimal(), StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, agendamento)))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("UNIQUE constraint failed");
+    }
 }
 
