@@ -2,6 +2,7 @@ package br.ifsp.demo.repository;
 
 import br.ifsp.demo.model.abertura.*;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -11,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -42,6 +45,11 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
     private int contar(String tabela) {
         return jdbc.queryForObject("SELECT COUNT(*) FROM " + tabela, Integer.class);
+    }
+
+    @Test
+    void buscarPorAnimalId_semAtendimentos_retornaListaVazia() {
+        assertThat(repository.buscarPorAnimalId(novoAnimal())).isEmpty();
     }
 
 }
