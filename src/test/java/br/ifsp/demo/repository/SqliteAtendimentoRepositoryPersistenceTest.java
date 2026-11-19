@@ -76,5 +76,19 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.novo()))
                 .isInstanceOf(AtendimentoNaoEncontradoException.class);
     }
+
+    @Test
+    void buscarPorAnimalId_retornaApenasAtendimentosDoAnimalInformado() {
+        AnimalId a1 = novoAnimal();
+        AnimalId a2 = novoAnimal();
+        repository.salvar(emAndamento(a1));
+        repository.salvar(atendimento(a1, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1), null));
+        repository.salvar(emAndamento(a2));
+
+        assertThat(repository.buscarPorAnimalId(a1))
+                .hasSize(2)
+                .allMatch(x -> x.getAnimalId().equals(a1));
+    }
 }
 
