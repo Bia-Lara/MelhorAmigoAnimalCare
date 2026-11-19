@@ -62,4 +62,10 @@ public class LoginPageObject extends BaseSeleniumTest{
                 .until(ExpectedConditions.visibilityOfElementLocated(loginError))
                 .getText();
     }
+
+    public void navigateToRegistrationPage(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(registerLink))
+                .click();
+    }
 }
