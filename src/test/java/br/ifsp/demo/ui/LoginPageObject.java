@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class LoginPageObject extends BaseSeleniumTest{
+public class LoginPageObject extends BasePageObject{
     private final By emailInput = By.name("email");
     private final By passwordInput = By.name("password");
     private final By loginButton = By.cssSelector("form button[type='submit']");
