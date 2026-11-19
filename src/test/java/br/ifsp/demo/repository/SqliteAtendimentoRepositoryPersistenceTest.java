@@ -1,5 +1,6 @@
 package br.ifsp.demo.repository;
 
+import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JdbcTest
@@ -67,6 +69,12 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(lido.getDiagnosticos()).isEmpty();
         assertThat(lido.getPrescricoes()).isEmpty();
         assertThat(lido.getExames()).isEmpty();
+    }
+
+    @Test
+    void buscarUmPorAtendimentoId_inexistente_lancaExcecao() {
+        assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.novo()))
+                .isInstanceOf(AtendimentoNaoEncontradoException.class);
     }
 }
 
