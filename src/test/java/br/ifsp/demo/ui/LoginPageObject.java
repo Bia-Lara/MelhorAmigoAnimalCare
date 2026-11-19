@@ -38,4 +38,10 @@ public class LoginPageObject extends BaseSeleniumTest{
                 .click();
 
     }
+
+    public void clickLogin(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(loginButton))
+                .click();
+    }
 }
