@@ -156,5 +156,11 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     void existeEmAndamentoParaAnimal_animalSemAtendimentos_retornaFalse() {
         assertThat(repository.existeEmAndamentoParaAnimal(novoAnimal())).isFalse();
     }
+
+    @Test
+    void existeEmAndamentoParaAnimal_emAndamentoDeOutroAnimal_retornaFalse() {
+        repository.salvar(emAndamento(novoAnimal()));
+        assertThat(repository.existeEmAndamentoParaAnimal(novoAnimal())).isFalse();
+    }
 }
 
