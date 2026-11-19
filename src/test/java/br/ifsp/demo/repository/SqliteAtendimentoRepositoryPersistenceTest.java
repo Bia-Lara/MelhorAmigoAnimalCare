@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
@@ -89,6 +90,16 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(repository.buscarPorAnimalId(a1))
                 .hasSize(2)
                 .allMatch(x -> x.getAnimalId().equals(a1));
+    }
+
+    @Test
+    void salvar_doisEmAndamentoParaMesmoAnimal_violaUnicidade() {
+        AnimalId animal = novoAnimal();
+        repository.salvar(emAndamento(animal));
+
+        assertThatThrownBy(() -> repository.salvar(emAndamento(animal)))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("UNIQUE constraint failed");
     }
 }
 
