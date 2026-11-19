@@ -140,5 +140,16 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(repository.existeEmAndamentoParaAnimal(animal)).isTrue();
     }
+
+    @Test
+    void existeEmAndamentoParaAnimal_somenteConcluidoOuCancelado_retornaFalse() {
+        AnimalId animal = novoAnimal();
+        repository.salvar(atendimento(animal, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1), null));
+        repository.salvar(atendimento(animal, StatusAtendimento.CANCELADO,
+                LocalDateTime.now().minusHours(4), LocalDateTime.now().minusHours(3), null));
+
+        assertThat(repository.existeEmAndamentoParaAnimal(animal)).isFalse();
+    }
 }
 
