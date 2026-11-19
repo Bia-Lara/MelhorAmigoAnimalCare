@@ -132,5 +132,13 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(repository.buscarPorAnimalId(animal)).hasSize(2);
     }
+
+    @Test
+    void existeEmAndamentoParaAnimal_comAtendimentoEmAndamento_retornaTrue() {
+        AnimalId animal = novoAnimal();
+        repository.salvar(emAndamento(animal));
+
+        assertThat(repository.existeEmAndamentoParaAnimal(animal)).isTrue();
+    }
 }
 
