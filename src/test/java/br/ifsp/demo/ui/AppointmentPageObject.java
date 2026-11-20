@@ -26,6 +26,10 @@ public class AppointmentPageObject extends BasePageObject{
         super(driver);
     }
 
+    public void openAppointmentsPage(){
+        driver.get("http://localhost:5173");
+    }
+
     public String heading(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(heading))
