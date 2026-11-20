@@ -178,5 +178,23 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+
+        @Test
+        @DisplayName("Should return 409 when atendimento is already cancelled")
+        void shouldReturn409WhenAtendimentoIsAlreadyCancelled() {
+            Atendimento atendimento = Atendimento.abrirProntoAtendimento(AnimalId.of(UUID.randomUUID()));
+            atendimento.cancelar("Tutor desistiu do atendimento");
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("justificativa", "Segunda tentativa de cancelamento"))
+                    .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
