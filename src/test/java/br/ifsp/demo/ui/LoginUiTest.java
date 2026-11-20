@@ -23,4 +23,10 @@ public class LoginUiTest extends BaseSeleniumTest{
         assertThat(loginPage.fieldErrorMessages()).contains("Informe o e-mail.", "Informe a senha.");
 
     }
+
+    @Test
+    @DisplayName("shouldMaskPassword")
+    void shouldMaskPassword() {
+        assertThat(loginPage.passwordFieldType()).isEqualTo("password");
+    }
 }

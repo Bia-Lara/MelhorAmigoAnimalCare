@@ -68,4 +68,8 @@ public class LoginPageObject extends BasePageObject{
                 .until(ExpectedConditions.elementToBeClickable(registerLink))
                 .click();
     }
+
+    public String passwordFieldType(){
+        return driver.findElement(passwordInput).getAttribute("type");
+    }
 }
