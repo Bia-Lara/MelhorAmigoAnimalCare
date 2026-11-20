@@ -105,4 +105,10 @@ public class AppointmentPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(openingError))
                 .getText();
     }
+
+    public String recentAppointmentsMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(recentEmptyMessage))
+                .getText();
+    }
 }
