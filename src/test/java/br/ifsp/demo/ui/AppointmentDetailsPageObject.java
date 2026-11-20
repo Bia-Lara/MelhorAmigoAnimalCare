@@ -13,6 +13,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By appointmentId = By.cssSelector(".header-card h1.h-id");
     private final By appointmentOrigin =
             By.xpath("//dt[normalize-space()='Origem']/following-sibling::dd");
+    private final By backToAppointmentsLink = By.cssSelector("a.back-link");
+    private final By animalId = By.xpath("//dt[normalize-space()='Animal']/following-sibling::dd");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -27,6 +29,22 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String appointmentOrigin(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(appointmentOrigin))
+                .getText();
+    }
+
+    public AppointmentPageObject backToAppointments(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(backToAppointmentsLink))
+                .click();
+
+        AppointmentPageObject page = new AppointmentPageObject(driver);
+        page.heading();
+        return page;
+    }
+
+    public String animalId(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(animalId))
                 .getText();
     }
 

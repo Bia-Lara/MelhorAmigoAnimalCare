@@ -120,4 +120,8 @@ public class AppointmentPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(recentEmptyMessage))
                 .getText();
     }
+
+    public void selectFirstExistingAnimal(){
+        new Select(driver.findElement(animalSelect)).selectByIndex(1);
+    }
 }

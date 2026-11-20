@@ -61,5 +61,25 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         assertThat(detailsPage.appointmentId()).isNotBlank();
         assertThat(detailsPage.appointmentOrigin()).isEqualTo("Agendamento");
     }
+
+    @Test
+    @DisplayName("shouldRejectEmergencyAppointmentForAnimalAlreadyInProgress")
+    void shouldRejectEmergencyAppointmentForAnimalAlreadyInProgress() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject firstAppointment = appointmentPage.clickOpenAppointment();
+        String animalId = firstAppointment.animalId();
+        assertThat(firstAppointment.appointmentId()).isNotBlank();
+
+        AppointmentPageObject appointmentPage = firstAppointment.backToAppointments();
+
+        appointmentPage.selectAppointment();
+        appointmentPage.selectFirstExistingAnimal();
+        appointmentPage.clickOpenAppointment();
+
+        assertThat(appointmentPage.openingErrorMessage()).isEqualTo("Animal - "  + animalId + " já possui atendimento em andamento!");
+
+    }
     
 }
