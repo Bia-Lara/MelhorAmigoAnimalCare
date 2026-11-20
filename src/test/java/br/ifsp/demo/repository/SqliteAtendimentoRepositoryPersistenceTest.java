@@ -284,5 +284,22 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 .containsExactly("Zeta", "Alfa");
         assertThat(lida.getItens().getFirst().getDosagem()).isEqualTo(10);
     }
+
+    @Test
+    void salvar_regravandoSemPrescricoes_removePrescricoesEItens() {
+        AtendimentoId id = AtendimentoId.novo();
+        AnimalId animal = novoAnimal();
+        Prescricao p = Prescricao.reconstituir(PrescricaoId.novo(),
+                List.of(new ItemPrescricao("A", 1, "ORAL", "8/8h", 1)),
+                StatusPrescricao.ABERTA, LocalDateTime.now());
+        repository.salvar(Atendimento.reconstituir(id, animal, null, StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, null, null, null, List.of(), List.of(p), List.of()));
+
+        repository.salvar(Atendimento.reconstituir(id, animal, null, StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, null, null, null, List.of(), List.of(), List.of()));
+
+        assertThat(contar("prescricao")).isZero();
+        assertThat(contar("item_prescricao")).isZero();
+    }
 }
 
