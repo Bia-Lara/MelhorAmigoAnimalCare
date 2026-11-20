@@ -322,5 +322,19 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(exames.get(1).getStatus()).isEqualTo(ExameStatus.CONCLUIDO);
         assertThat(exames.get(1).getResultado()).isEqualTo("Sem alteracoes");
     }
+
+    @Test
+    void salvar_atendimentoReabertoEmAndamento_naoDeveManterDataDeConclusao() {
+        AnimalId animal = novoAnimal();
+        LocalDateTime agora = LocalDateTime.now();
+        Atendimento a = atendimento(animal, StatusAtendimento.CONCLUIDO, agora.minusHours(2), agora.minusHours(1), null);
+        a.reabrir(agora);
+        repository.salvar(a);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+
+        assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.EM_ANDAMENTO);
+        assertThat(lido.getDataHoraConclusao()).isNull();
+    }
 }
 
