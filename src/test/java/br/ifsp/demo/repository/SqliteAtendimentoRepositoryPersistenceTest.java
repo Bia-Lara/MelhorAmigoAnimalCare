@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -181,6 +182,12 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     void existeAtendimentoParaAgendamento_prontoAtendimento_naoCasaComNenhumAgendamento() {
         repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
         assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
+    }
+
+    @Test
+    void existeAtendimentoParaAgendamento_parametroNulo_naoDeveLancarExcecao() {
+        assertThatCode(() -> repository.existeAtendimentoParaAgendamento(null))
+                .doesNotThrowAnyException();
     }
 }
 
