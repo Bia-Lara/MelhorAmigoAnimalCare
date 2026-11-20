@@ -12,9 +12,9 @@ import java.time.Duration;
 
 public class AppointmentPageObject extends BasePageObject{
     private final By heading = By.cssSelector(".page-head h1");
-    private final By openingTypeButtons = By.cssSelector(".segmented button[role='radio'");
+    private final By openingTypeButtons = By.cssSelector(".segmented button[role='radio']");
     private final By animalSelect = By.cssSelector(".card select");
-    private final By openAppointmentButton = By.cssSelector(".grid--2 .card:first-child form button[type='submit'");
+    private final By openAppointmentButton = By.cssSelector(".grid--2 .card:first-child form button[type='submit']");
     private final By openingError = By.cssSelector(".alert--error");
     private final By appointmentIdInput = By.cssSelector("input[placeholder='UUID']");
     private final By searchButton = By.cssSelector(".form--inline button[type='submit']");
@@ -69,4 +69,10 @@ public class AppointmentPageObject extends BasePageObject{
         new Select(driver.findElement(animalSelect))
                 .selectByVisibleText(visibleText);
     }
+
+    public String selectedAnimal(){
+        return new Select(driver.findElement(animalSelect))
+                .getFirstSelectedOption().getText();
+    }
+
 }
