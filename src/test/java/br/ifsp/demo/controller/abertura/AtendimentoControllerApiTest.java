@@ -43,5 +43,17 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(201)
                     .body("id", notNullValue());
         }
+
+        @Test
+        @DisplayName("Should return 400 with message when animalId is null")
+        void shouldReturn400WhenAnimalIdIsNull() {
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of())
+                    .when().post("/api/v1/atendimentos/pronto-atendimento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .body("message", containsString("animalId"));
+        }
     }
 }
