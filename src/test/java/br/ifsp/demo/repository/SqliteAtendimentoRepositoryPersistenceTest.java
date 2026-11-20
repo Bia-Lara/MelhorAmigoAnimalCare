@@ -4,6 +4,10 @@ import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
 import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
+import br.ifsp.demo.model.exame.Exame;
+import br.ifsp.demo.model.exame.ExameId;
+import br.ifsp.demo.model.exame.ExameSolicitado;
+import br.ifsp.demo.model.exame.ExameStatus;
 import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.model.prescricao.Prescricao;
 import br.ifsp.demo.model.prescricao.PrescricaoId;
@@ -300,6 +304,23 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(contar("prescricao")).isZero();
         assertThat(contar("item_prescricao")).isZero();
+    }
+
+    @Test
+    void salvar_comExames_recuperaStatusEResultado() {
+        ExameSolicitado pendente = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Raio-X"), LocalDateTime.now());
+        ExameSolicitado concluido = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Ultrassom"), LocalDateTime.now());
+        concluido.setResultado("Sem alteracoes");
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(), List.of(), List.of(pendente, concluido));
+        repository.salvar(original);
+
+        List<ExameSolicitado> exames = repository.buscarUmPorAtendimentoId(original.getId()).getExames();
+
+        assertThat(exames.get(0).getStatus()).isEqualTo(ExameStatus.PENDENTE);
+        assertThat(exames.get(1).getStatus()).isEqualTo(ExameStatus.CONCLUIDO);
+        assertThat(exames.get(1).getResultado()).isEqualTo("Sem alteracoes");
     }
 }
 
