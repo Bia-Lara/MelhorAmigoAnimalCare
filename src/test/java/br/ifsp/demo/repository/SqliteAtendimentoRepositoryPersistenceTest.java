@@ -176,5 +176,11 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     void existeAtendimentoParaAgendamento_semAtendimento_retornaFalse() {
         assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
     }
+
+    @Test
+    void existeAtendimentoParaAgendamento_prontoAtendimento_naoCasaComNenhumAgendamento() {
+        repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
+        assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
+    }
 }
 
