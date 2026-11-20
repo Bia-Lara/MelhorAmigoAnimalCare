@@ -95,4 +95,8 @@ public class AppointmentPageObject extends BasePageObject{
                 .click();
     }
 
+    public boolean isClearRecentButtonDisplayed(){
+        return !driver.findElements(clearRecentButton).isEmpty()
+                && driver.findElement(clearRecentButton).isDisplayed();
+    }
 }
