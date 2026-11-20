@@ -2,6 +2,10 @@ package br.ifsp.demo.ui;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class RegisterPageObject extends BasePageObject{
     private final By nameInput= By.name("name");
@@ -18,5 +22,18 @@ public class RegisterPageObject extends BasePageObject{
     public void openRegisterPage(){
         driver.get("http://localhost:5173/registrar");
     }
+
+    public void registerAccount(String name, String lastname, String email, String password, String confirmPassword){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(nameInput)).sendKeys(name);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(lastNameInput)).sendKeys(lastname);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(emailInput)).sendKeys(email);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInput)).sendKeys(password);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(confirmPasswordInput)).sendKeys(confirmPassword);
+
+        wait.until(ExpectedConditions.elementToBeClickable(registerButton)).click();
+    }
+
 
 }
