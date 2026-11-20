@@ -29,4 +29,14 @@ public class LoginUiTest extends BaseSeleniumTest{
     void shouldMaskPassword() {
         assertThat(loginPage.passwordFieldType()).isEqualTo("password");
     }
+
+    @Test
+    @DisplayName("shouldRequireEmail")
+    void shouldRequireEmail() {
+        loginPage.enterPassword("teste");
+        loginPage.clickLogin();
+
+        assertThat(loginPage.fieldErrorMessages()).containsExactly("Informe o e-mail.");
+
+    }
 }

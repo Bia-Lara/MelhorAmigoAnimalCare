@@ -72,4 +72,10 @@ public class LoginPageObject extends BasePageObject{
     public String passwordFieldType(){
         return driver.findElement(passwordInput).getAttribute("type");
     }
+
+    public void enterPassword(String password){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(passwordInput))
+                .sendKeys(password);
+    }
 }
