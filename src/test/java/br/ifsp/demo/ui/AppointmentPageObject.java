@@ -75,4 +75,13 @@ public class AppointmentPageObject extends BasePageObject{
                 .getFirstSelectedOption().getText();
     }
 
+    public void openRecentAppointment(int index){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(recentAppointments));
+
+        driver.findElements(recentAppointments)
+                .get(index)
+                .click();
+    }
+
 }
