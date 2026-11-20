@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Tag("UiTest")
+@Tag("UITest")
 public class LoginUiTest extends BaseSeleniumTest{
     private LoginPageObject loginPage;
     private static final String TEST_EMAIL = "teste@email.com";
