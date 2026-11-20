@@ -124,5 +124,17 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(400)
                     .body("message", containsString("agendamentoId"));
         }
+
+        @Test
+        @DisplayName("Should return 400 when agendamentoId is not a valid UUID")
+        void shouldReturn400WhenAgendamentoIdIsInvalidUuid() {
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("animalId", UUID.randomUUID(), "agendamentoId", "not-a-uuid"))
+                    .when().post("/api/v1/atendimentos/agendados")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
