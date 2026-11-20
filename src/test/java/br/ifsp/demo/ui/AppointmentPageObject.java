@@ -83,5 +83,10 @@ public class AppointmentPageObject extends BasePageObject{
                 .get(index)
                 .click();
     }
+    public void clickOpenAppointment(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(openAppointmentButton))
+                .click();
+    }
 
 }
