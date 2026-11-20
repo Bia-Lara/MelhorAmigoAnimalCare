@@ -49,5 +49,9 @@ public class AppointmentPageObject extends BasePageObject{
         throw new NoSuchElementException("Opening type not found: " + label);
     }
 
-
+    public void clickSearchAppointment(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(searchButton))
+                .click();
+    }
 }
