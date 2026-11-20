@@ -162,5 +162,14 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         repository.salvar(emAndamento(novoAnimal()));
         assertThat(repository.existeEmAndamentoParaAnimal(novoAnimal())).isFalse();
     }
+
+    @Test
+    void existeAtendimentoParaAgendamento_comAtendimento_retornaTrue() {
+        AgendamentoId ag = AgendamentoId.of(UUID.randomUUID());
+        repository.salvar(atendimento(novoAnimal(), StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, ag));
+
+        assertThat(repository.existeAtendimentoParaAgendamento(ag)).isTrue();
+    }
 }
 
