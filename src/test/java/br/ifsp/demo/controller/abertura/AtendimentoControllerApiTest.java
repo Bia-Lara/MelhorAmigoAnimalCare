@@ -6,6 +6,7 @@ import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -163,6 +164,19 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("id", equalTo(id.toString()))
                     .body("status", equalTo("CANCELADO"))
                     .body("justificativa", equalTo("Tutor desistiu do atendimento"));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when atendimento does not exist")
+        void shouldReturn404WhenAtendimentoDoesNotExist() {
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("justificativa", "Tutor desistiu do atendimento"))
+                    .when().post("/api/v1/atendimentos/" + UUID.randomUUID() + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(404)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
         }
     }
 }
