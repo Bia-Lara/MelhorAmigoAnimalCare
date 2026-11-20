@@ -100,5 +100,17 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("animalId", equalTo(animalId.toString()))
                     .body("agendamentoId", equalTo(agendamentoId.toString()));
         }
+
+        @Test
+        @DisplayName("Should return 400 when animalId is null")
+        void shouldReturn400WhenAnimalIdIsNull() {
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("agendamentoId", UUID.randomUUID()))
+                    .when().post("/api/v1/atendimentos/agendados")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .body("message", containsString("animalId"));
+        }
     }
 }
