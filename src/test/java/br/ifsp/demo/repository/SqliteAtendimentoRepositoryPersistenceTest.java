@@ -2,7 +2,9 @@ package br.ifsp.demo.repository;
 
 import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
+import br.ifsp.demo.model.clinico.Anamnese;
 import br.ifsp.demo.model.clinico.Diagnostico;
+import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
 import br.ifsp.demo.model.exame.Exame;
 import br.ifsp.demo.model.exame.ExameId;
@@ -375,6 +377,20 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.of(UUID.fromString(id))))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void salvar_sinaisVitaisEAnamneseAdicionadosDepois_saoAtualizados() {
+        Atendimento a = emAndamento(novoAnimal());
+        repository.salvar(a);
+
+        a.registrarSinaisVitais(new SinaisVitais(39.0, 100, 8.0));
+        a.registrarAnamnese(new Anamnese("Tosse", "Ha 3 dias"));
+        repository.salvar(a);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+        assertThat(lido.getSinaisVitais()).isEqualTo(new SinaisVitais(39.0, 100, 8.0));
+        assertThat(lido.getAnamnese()).isEqualTo(new Anamnese("Tosse", "Ha 3 dias"));
     }
 }
 
