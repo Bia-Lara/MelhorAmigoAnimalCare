@@ -2,8 +2,14 @@ package br.ifsp.demo.repository;
 
 import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
+import br.ifsp.demo.model.clinico.Anamnese;
 import br.ifsp.demo.model.clinico.Diagnostico;
+import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
+import br.ifsp.demo.model.exame.Exame;
+import br.ifsp.demo.model.exame.ExameId;
+import br.ifsp.demo.model.exame.ExameSolicitado;
+import br.ifsp.demo.model.exame.ExameStatus;
 import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.model.prescricao.Prescricao;
 import br.ifsp.demo.model.prescricao.PrescricaoId;
@@ -36,6 +42,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     private SqliteAtendimentoRepository repository;
     @Autowired
     private JdbcTemplate jdbc;
+    private static final String INSERT_ATENDIMENTO = "INSERT INTO atendimento (id, animal_id, agendamento_id, status, data_hora_atendimento) VALUES (?,?,?,?,?)";
+
 
     private static AnimalId novoAnimal() {
         return AnimalId.of(UUID.randomUUID());
@@ -300,6 +308,102 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(contar("prescricao")).isZero();
         assertThat(contar("item_prescricao")).isZero();
+    }
+
+    @Test
+    void salvar_comExames_recuperaStatusEResultado() {
+        ExameSolicitado pendente = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Raio-X"), LocalDateTime.now());
+        ExameSolicitado concluido = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Ultrassom"), LocalDateTime.now());
+        concluido.setResultado("Sem alteracoes");
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(), List.of(), List.of(pendente, concluido));
+        repository.salvar(original);
+
+        List<ExameSolicitado> exames = repository.buscarUmPorAtendimentoId(original.getId()).getExames();
+
+        assertThat(exames.get(0).getStatus()).isEqualTo(ExameStatus.PENDENTE);
+        assertThat(exames.get(1).getStatus()).isEqualTo(ExameStatus.CONCLUIDO);
+        assertThat(exames.get(1).getResultado()).isEqualTo("Sem alteracoes");
+    }
+
+    @Test
+    void salvar_atendimentoReabertoEmAndamento_naoDeveManterDataDeConclusao() {
+        AnimalId animal = novoAnimal();
+        LocalDateTime agora = LocalDateTime.now();
+        Atendimento a = atendimento(animal, StatusAtendimento.CONCLUIDO, agora.minusHours(2), agora.minusHours(1), null);
+        a.reabrir(agora);
+        repository.salvar(a);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+
+        assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.EM_ANDAMENTO);
+        assertThat(lido.getDataHoraConclusao()).isNull();
+    }
+
+    @Test
+    void insert_chavePrimariaDuplicada_eRejeitada() {
+        String id = UUID.randomUUID().toString();
+        jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "CONCLUIDO", LocalDateTime.now().toString());
+
+        assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "CONCLUIDO", LocalDateTime.now().toString()))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("UNIQUE constraint failed");
+    }
+
+    @Test
+    void insert_animalIdNulo_eRejeitado() {
+        assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, UUID.randomUUID().toString(),
+                null, null, "CONCLUIDO", LocalDateTime.now().toString()))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("NOT NULL constraint failed");
+    }
+
+    @Test
+    void insert_statusNulo_eRejeitado() {
+        assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(), null, null, LocalDateTime.now().toString()))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("NOT NULL constraint failed");
+    }
+
+    @Test
+    void insert_statusInvalido_bancoAceitaMasLeituraFalha() {
+        String id = UUID.randomUUID().toString();
+        jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "INVALIDO", LocalDateTime.now().toString());
+
+        assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.of(UUID.fromString(id))))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void salvar_sinaisVitaisEAnamneseAdicionadosDepois_saoAtualizados() {
+        Atendimento a = emAndamento(novoAnimal());
+        repository.salvar(a);
+
+        a.registrarSinaisVitais(new SinaisVitais(39.0, 100, 8.0));
+        a.registrarAnamnese(new Anamnese("Tosse", "Ha 3 dias"));
+        repository.salvar(a);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+        assertThat(lido.getSinaisVitais()).isEqualTo(new SinaisVitais(39.0, 100, 8.0));
+        assertThat(lido.getAnamnese()).isEqualTo(new Anamnese("Tosse", "Ha 3 dias"));
+    }
+
+    @Test
+    void salvar_mesmoIdDuasVezes_naoDuplicaEAtualizaStatus() {
+        Atendimento a = emAndamento(novoAnimal());
+        repository.salvar(a);
+        a.cancelar("Tutor desistiu");
+        repository.salvar(a);
+
+        assertThat(contar("atendimento")).isEqualTo(1);
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+        assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.CANCELADO);
+        assertThat(lido.getJustificativa()).isEqualTo("Tutor desistiu");
     }
 }
 
