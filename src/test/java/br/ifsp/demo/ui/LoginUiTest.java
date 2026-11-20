@@ -9,6 +9,8 @@ import static org.assertj.core.api.Assertions.*;
 @Tag("UiTest")
 public class LoginUiTest extends BaseSeleniumTest{
     private LoginPageObject loginPage;
+    private static final String TEST_EMAIL = "teste@email.com";
+    private static final String TEST_PASSWORD = "123456";
 
     @Override
     protected void setInitialPage(){
@@ -57,6 +59,17 @@ public class LoginUiTest extends BaseSeleniumTest{
 
         assertThat(loginPage.fieldErrorMessages())
                 .contains("Informe o e-mail.", "Informe a senha.");
+    }
+
+    @Test
+    @DisplayName("shouldOpenAppointmentPageValidCredentials")
+    void shouldOpenAppointmentPageValidCredentials() {
+        loginPage.authenticate(TEST_EMAIL, TEST_PASSWORD);
+
+        AppointmentPageObject appointmentPage = new AppointmentPageObject(driver);
+
+        assertThat(appointmentPage.heading()).isEqualTo("Atendimentos");
+
 
     }
 
