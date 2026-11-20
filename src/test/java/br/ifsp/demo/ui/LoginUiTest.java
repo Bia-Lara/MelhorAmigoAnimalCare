@@ -59,4 +59,5 @@ public class LoginUiTest extends BaseSeleniumTest{
                 .contains("Informe o e-mail.", "Informe a senha.");
 
     }
+
 }
