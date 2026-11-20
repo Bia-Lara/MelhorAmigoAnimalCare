@@ -27,6 +27,12 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
     @Autowired
     private AtendimentoRepository atendimentoRepository;
 
+    private Atendimento givenAtendimentoEmAndamento() {
+        Atendimento atendimento = Atendimento.abrirProntoAtendimento(AnimalId.of(UUID.randomUUID()));
+        atendimentoRepository.salvar(atendimento);
+        return atendimento;
+    }
+
     @BeforeEach
     void authSetup() {
         User user = registerUser(PASSWORD);
@@ -135,6 +141,28 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .then().log().ifValidationFails(LogDetail.BODY)
                     .statusCode(400)
                     .body("message", not(emptyOrNullString()));
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /{id}/cancelamento")
+    class Cancelamento {
+
+        @Test
+        @DisplayName("Should return 200 with CANCELADO status and justificativa")
+        void shouldReturn200WhenJustificativaIsProvided() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("justificativa", "Tutor desistiu do atendimento"))
+                    .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .body("id", equalTo(id.toString()))
+                    .body("status", equalTo("CANCELADO"))
+                    .body("justificativa", equalTo("Tutor desistiu do atendimento"));
         }
     }
 }
