@@ -89,4 +89,10 @@ public class AppointmentPageObject extends BasePageObject{
                 .click();
     }
 
+    public void clearRecentAppointmens(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(clearRecentButton))
+                .click();
+    }
+
 }
