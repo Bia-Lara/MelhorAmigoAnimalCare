@@ -49,4 +49,14 @@ public class LoginUiTest extends BaseSeleniumTest{
         assertThat(loginPage.fieldErrorMessages()).containsExactly("Informe a senha.");
 
     }
+
+    @Test
+    @DisplayName("shouldRejectWhitespaceOnlyValues")
+    void shouldRejectWhitespaceOnlyValues() {
+        loginPage.authenticate(" ", " ");
+
+        assertThat(loginPage.fieldErrorMessages())
+                .contains("Informe o e-mail.", "Informe a senha.");
+
+    }
 }
