@@ -1,7 +1,9 @@
 package br.ifsp.demo.ui;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -28,4 +30,24 @@ public class AppointmentPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(heading))
                 .getText();
     }
+
+    public void selectAppointment(){
+        selectOpeningType("Pronto atendimnto");
+    }
+
+    public void selectScheduledAppointment(){
+        selectOpeningType("Com agendamento");
+    }
+
+    private void selectOpeningType(String label) {
+        for (WebElement button : driver.findElements(openingTypeButtons)) {
+            if (button.getText().equals(label)) {
+                button.click();
+                return;
+            }
+        }
+        throw new NoSuchElementException("Opening type not found: " + label);
+    }
+
+
 }
