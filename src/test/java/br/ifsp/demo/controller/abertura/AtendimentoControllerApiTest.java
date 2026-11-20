@@ -251,5 +251,19 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+
+        @Test
+        @DisplayName("Should return 422 when atendimento has no vital signs")
+        void shouldReturn422WhenNoVitalSigns() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/conclusao")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(422)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
