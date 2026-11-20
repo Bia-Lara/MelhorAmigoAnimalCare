@@ -392,5 +392,18 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(lido.getSinaisVitais()).isEqualTo(new SinaisVitais(39.0, 100, 8.0));
         assertThat(lido.getAnamnese()).isEqualTo(new Anamnese("Tosse", "Ha 3 dias"));
     }
+
+    @Test
+    void salvar_mesmoIdDuasVezes_naoDuplicaEAtualizaStatus() {
+        Atendimento a = emAndamento(novoAnimal());
+        repository.salvar(a);
+        a.cancelar("Tutor desistiu");
+        repository.salvar(a);
+
+        assertThat(contar("atendimento")).isEqualTo(1);
+        Atendimento lido = repository.buscarUmPorAtendimentoId(a.getId());
+        assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.CANCELADO);
+        assertThat(lido.getJustificativa()).isEqualTo("Tutor desistiu");
+    }
 }
 
