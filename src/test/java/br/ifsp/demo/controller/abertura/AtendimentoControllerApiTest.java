@@ -5,6 +5,7 @@ import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.abertura.AtendimentoId;
 import br.ifsp.demo.model.abertura.StatusAtendimento;
+import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import io.restassured.filter.log.LogDetail;
@@ -256,6 +257,23 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
         @DisplayName("Should return 422 when atendimento has no vital signs")
         void shouldReturn422WhenNoVitalSigns() {
             UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/conclusao")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(422)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
+
+        @Test
+        @DisplayName("Should return 422 when atendimento has no diagnosis")
+        void shouldReturn422WhenNoDiagnosis() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            atendimento.registrarSinaisVitais(new SinaisVitais(10, 10, 10));
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
 
             given().contentType("application/json").port(port)
                     .header("Authorization", "Bearer " + token)
