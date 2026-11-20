@@ -242,5 +242,23 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(contar("diagnostico")).isEqualTo(1);
     }
+
+    @Test
+    void buscarPorAnimalId_ordenaPorDataHoraDecrescente() {
+        AnimalId animal = novoAnimal();
+        Atendimento antigo = atendimento(animal, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.of(2026, 1, 1, 10, 0), LocalDateTime.of(2026, 1, 1, 11, 0), null);
+        Atendimento meio = atendimento(animal, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.of(2026, 1, 1, 10, 0, 30), LocalDateTime.of(2026, 1, 1, 11, 0), null);
+        Atendimento recente = atendimento(animal, StatusAtendimento.CONCLUIDO,
+                LocalDateTime.of(2026, 3, 5, 9, 0), LocalDateTime.of(2026, 3, 5, 10, 0), null);
+        repository.salvar(meio);
+        repository.salvar(antigo);
+        repository.salvar(recente);
+
+        assertThat(repository.buscarPorAnimalId(animal))
+                .extracting(Atendimento::getId)
+                .containsExactly(recente.getId(), meio.getId(), antigo.getId());
+    }
 }
 
