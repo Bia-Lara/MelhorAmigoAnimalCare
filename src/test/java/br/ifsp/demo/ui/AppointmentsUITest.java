@@ -45,7 +45,21 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         AppointmentDetailsPageObject detailsPage = appointmentPage.clickOpenAppointment();
 
         assertThat(detailsPage.appointmentId()).isNotBlank();
+        assertThat(detailsPage.appointmentOrigin()).isEqualTo("Pronto atendimento");
+    }
 
+    @DisplayName("shouldOpenScheduledAppointmentWithNewAnimal")
+    void shouldOpenScheduledAppointmentWithNewAnimal() {
+        appointmentPage.selectScheduledAppointment();
+        appointmentPage.selectNewAnimal();
+
+        assertThat(appointmentPage.selectedAnimal())
+                .isEqualTo("Novo animal");
+
+        AppointmentDetailsPageObject detailsPage = appointmentPage.clickOpenAppointment();
+
+        assertThat(detailsPage.appointmentId()).isNotBlank();
+        assertThat(detailsPage.appointmentOrigin()).isEqualTo("Agendamento");
     }
     
 }
