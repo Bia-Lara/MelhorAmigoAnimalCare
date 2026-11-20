@@ -9,6 +9,15 @@ import java.time.Duration;
 
 public class AppointmentPageObject extends BasePageObject{
     private final By heading = By.cssSelector(".page-head h1");
+    private final By openingTypeButtons = By.cssSelector(".segmented button[role='radio'");
+    private final By animalSelect = By.cssSelector(".card select");
+    private final By openAppointmentButton = By.cssSelector(".grid--2 .card:first-child form button[type='submit'");
+    private final By openingError = By.cssSelector(".alert--error");
+    private final By appointmentIdInput = By.cssSelector("input[placeholder='UUID']");
+    private final By searchButton = By.cssSelector(".form--inline button[type='submit']");
+    private final By recentAppointments = By.cssSelector(".list__row");
+    private final By recentEmptyMessage = By.cssSelector(".card .empty");
+    private final By clearRecentButton = By.cssSelector(".card__actions button");
 
     public AppointmentPageObject(WebDriver driver){
         super(driver);
