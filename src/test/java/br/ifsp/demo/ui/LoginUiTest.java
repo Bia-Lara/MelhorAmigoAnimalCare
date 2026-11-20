@@ -39,4 +39,14 @@ public class LoginUiTest extends BaseSeleniumTest{
         assertThat(loginPage.fieldErrorMessages()).containsExactly("Informe o e-mail.");
 
     }
+
+    @Test
+    @DisplayName("shouldRequirePassword")
+    void shouldRequirePassword() {
+        loginPage.enterEmail("teste");
+        loginPage.clickLogin();
+
+        assertThat(loginPage.fieldErrorMessages()).containsExactly("Informe a senha.");
+
+    }
 }

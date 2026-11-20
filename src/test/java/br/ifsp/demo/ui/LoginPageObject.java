@@ -78,4 +78,10 @@ public class LoginPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(passwordInput))
                 .sendKeys(password);
     }
+
+    public void enterEmail(String email){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(emailInput))
+                .sendKeys(email);
+    }
 }
