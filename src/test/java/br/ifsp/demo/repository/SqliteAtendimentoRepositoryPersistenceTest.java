@@ -171,5 +171,10 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(repository.existeAtendimentoParaAgendamento(ag)).isTrue();
     }
+
+    @Test
+    void existeAtendimentoParaAgendamento_semAtendimento_retornaFalse() {
+        assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
+    }
 }
 
