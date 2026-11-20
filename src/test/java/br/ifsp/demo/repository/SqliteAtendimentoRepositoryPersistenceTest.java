@@ -350,5 +350,13 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 .isInstanceOf(UncategorizedSQLException.class)
                 .hasMessageContaining("UNIQUE constraint failed");
     }
+
+    @Test
+    void insert_animalIdNulo_eRejeitado() {
+        assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, UUID.randomUUID().toString(),
+                null, null, "CONCLUIDO", LocalDateTime.now().toString()))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("NOT NULL constraint failed");
+    }
 }
 
