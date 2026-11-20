@@ -3,6 +3,8 @@ package br.ifsp.demo.controller.abertura;
 import br.ifsp.demo.controller.BaseApiIntegrationTest;
 import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
+import br.ifsp.demo.model.abertura.AtendimentoId;
+import br.ifsp.demo.model.abertura.StatusAtendimento;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import io.restassured.filter.log.LogDetail;
@@ -10,6 +12,8 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -223,6 +227,27 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
                     .then().log().ifValidationFails(LogDetail.BODY)
                     .statusCode(400)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
+
+        @Test
+        @DisplayName("Should return 409 when cancelling a concluded atendimento")
+        void shouldReturn409WhenAtendimentoIsConcluded() {
+            Atendimento concluido = Atendimento.reconstituir(
+                    AtendimentoId.novo(), AnimalId.of(UUID.randomUUID()), null,
+                    StatusAtendimento.CONCLUIDO, LocalDateTime.now().minusHours(2),
+                    LocalDateTime.now().minusHours(1), null,
+                    null, null, List.of(), List.of(), List.of());
+            atendimentoRepository.salvar(concluido);
+            UUID id = concluido.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("justificativa", "Tentativa de cancelar atendimento concluído"))
+                    .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
