@@ -2,6 +2,8 @@ package br.ifsp.demo.repository;
 
 import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
+import br.ifsp.demo.model.clinico.Diagnostico;
+import br.ifsp.demo.model.clinico.TipoDiagnostico;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,6 +190,22 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     void existeAtendimentoParaAgendamento_parametroNulo_naoDeveLancarExcecao() {
         assertThatCode(() -> repository.existeAtendimentoParaAgendamento(null))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void salvar_comDiagnosticos_recuperaTodosOsCampos() {
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(new Diagnostico("A01", "Gastrite", TipoDiagnostico.PRESUNTIVO),
+                        new Diagnostico("B02", "Infeccao", TipoDiagnostico.DEFINITIVO)),
+                List.of(), List.of());
+        repository.salvar(original);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(original.getId());
+
+        assertThat(lido.getDiagnosticos()).containsExactly(
+                new Diagnostico("A01", "Gastrite", TipoDiagnostico.PRESUNTIVO),
+                new Diagnostico("B02", "Infeccao", TipoDiagnostico.DEFINITIVO));
     }
 }
 
