@@ -207,5 +207,22 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 new Diagnostico("A01", "Gastrite", TipoDiagnostico.PRESUNTIVO),
                 new Diagnostico("B02", "Infeccao", TipoDiagnostico.DEFINITIVO));
     }
+
+    @Test
+    void salvar_comDiagnosticos_preservaOrdemDeInsercao() {
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(new Diagnostico("Z", "ultimo-alfabeto", TipoDiagnostico.EMPIRICO),
+                        new Diagnostico("A", "primeiro-alfabeto", TipoDiagnostico.EMPIRICO),
+                        new Diagnostico("M", "meio", TipoDiagnostico.EMPIRICO)),
+                List.of(), List.of());
+        repository.salvar(original);
+
+        Atendimento lido = repository.buscarUmPorAtendimentoId(original.getId());
+
+        assertThat(lido.getDiagnosticos())
+                .extracting(Diagnostico::codigo)
+                .containsExactly("Z", "A", "M");
+    }
 }
 
