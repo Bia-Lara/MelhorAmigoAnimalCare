@@ -366,5 +366,15 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 .isInstanceOf(UncategorizedSQLException.class)
                 .hasMessageContaining("NOT NULL constraint failed");
     }
+
+    @Test
+    void insert_statusInvalido_bancoAceitaMasLeituraFalha() {
+        String id = UUID.randomUUID().toString();
+        jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "INVALIDO", LocalDateTime.now().toString());
+
+        assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.of(UUID.fromString(id))))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
 
