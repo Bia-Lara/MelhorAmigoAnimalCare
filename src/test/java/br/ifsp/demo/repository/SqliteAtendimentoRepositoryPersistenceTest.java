@@ -40,6 +40,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     private SqliteAtendimentoRepository repository;
     @Autowired
     private JdbcTemplate jdbc;
+    private static final String INSERT_ATENDIMENTO = "INSERT INTO atendimento (id, animal_id, agendamento_id, status, data_hora_atendimento) VALUES (?,?,?,?,?)";
+
 
     private static AnimalId novoAnimal() {
         return AnimalId.of(UUID.randomUUID());
@@ -335,6 +337,18 @@ class SqliteAtendimentoRepositoryPersistenceTest {
 
         assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.EM_ANDAMENTO);
         assertThat(lido.getDataHoraConclusao()).isNull();
+    }
+
+    @Test
+    void insert_chavePrimariaDuplicada_eRejeitada() {
+        String id = UUID.randomUUID().toString();
+        jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "CONCLUIDO", LocalDateTime.now().toString());
+
+        assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
+                "CONCLUIDO", LocalDateTime.now().toString()))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("UNIQUE constraint failed");
     }
 }
 
