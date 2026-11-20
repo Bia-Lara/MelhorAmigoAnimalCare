@@ -23,7 +23,7 @@ public class RegisterPageObject extends BasePageObject{
         driver.get("http://localhost:5173/registrar");
     }
 
-    public void registerAccount(String name, String lastname, String email, String password, String confirmPassword){
+    public void fillRegistrationForm(String name, String lastname, String email, String password, String confirmPassword){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(nameInput)).sendKeys(name);
@@ -31,8 +31,20 @@ public class RegisterPageObject extends BasePageObject{
         wait.until(ExpectedConditions.visibilityOfElementLocated(emailInput)).sendKeys(email);
         wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInput)).sendKeys(password);
         wait.until(ExpectedConditions.visibilityOfElementLocated(confirmPasswordInput)).sendKeys(confirmPassword);
+    }
 
-        wait.until(ExpectedConditions.elementToBeClickable(registerButton)).click();
+    public void clickRegister(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(registerButton))
+                .click();
+    }
+
+    public void registerAccount(String name, String lastname, String email, String password, String confirmPassword){
+        fillRegistrationForm(name, lastname, email, password, confirmPassword);
+        clickRegister();
+
+        new WebDriverWait(driver,Duration.ofSeconds(10))
+                .until(ExpectedConditions.urlContains("/login"));
     }
 
 

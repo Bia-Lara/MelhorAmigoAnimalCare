@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class AppointmentPageObject extends BasePageObject{
     private final By heading = By.cssSelector(".page-head h1");
@@ -37,7 +38,7 @@ public class AppointmentPageObject extends BasePageObject{
     }
 
     public void selectAppointment(){
-        selectOpeningType("Pronto atendimnto");
+        selectOpeningType("Pronto atendimento");
     }
 
     public void selectScheduledAppointment(){
@@ -45,7 +46,11 @@ public class AppointmentPageObject extends BasePageObject{
     }
 
     private void selectOpeningType(String label) {
-        for (WebElement button : driver.findElements(openingTypeButtons)) {
+
+        List<WebElement> buttons = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(openingTypeButtons));
+
+        for (WebElement button : buttons) {
             if (button.getText().equals(label)) {
                 button.click();
                 return;
@@ -87,10 +92,12 @@ public class AppointmentPageObject extends BasePageObject{
                 .get(index)
                 .click();
     }
-    public void clickOpenAppointment(){
+    public AppointmentDetailsPageObject clickOpenAppointment(){
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(openAppointmentButton))
                 .click();
+
+        return new AppointmentDetailsPageObject(driver);
     }
 
     public void clearRecentAppointmens(){

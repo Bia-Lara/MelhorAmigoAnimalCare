@@ -1,7 +1,11 @@
 package br.ifsp.demo.ui;
 
 import com.github.javafaker.Faker;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import  static org.assertj.core.api.Assertions.*;
 
 @Tag("UITest")
 public class AppointmentsUITest extends BaseSeleniumTest {
@@ -27,4 +31,21 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         appointmentPage = new AppointmentPageObject(driver);
 
     }
+
+
+    @Test
+    @DisplayName("shouldOpenEmergencyAppointmentWithNewAnimal")
+    void shouldOpenEmergencyAppointmentWithNewAnimal() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        assertThat(appointmentPage.selectedAnimal())
+                .isEqualTo("Novo animal");
+
+        AppointmentDetailsPageObject detailsPage = appointmentPage.clickOpenAppointment();
+
+        assertThat(detailsPage.appointmentId()).isNotBlank();
+
+    }
+    
 }
