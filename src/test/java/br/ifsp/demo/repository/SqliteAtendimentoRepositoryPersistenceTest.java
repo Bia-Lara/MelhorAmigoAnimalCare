@@ -224,5 +224,23 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 .extracting(Diagnostico::codigo)
                 .containsExactly("Z", "A", "M");
     }
+
+    @Test
+    void salvar_regravandoComMenosDiagnosticos_removeOsAntigos() {
+        AtendimentoId id = AtendimentoId.novo();
+        AnimalId animal = novoAnimal();
+        repository.salvar(Atendimento.reconstituir(id, animal, null, StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, null, null, null,
+                List.of(new Diagnostico("A", "a", TipoDiagnostico.EMPIRICO),
+                        new Diagnostico("B", "b", TipoDiagnostico.EMPIRICO)),
+                List.of(), List.of()));
+
+        repository.salvar(Atendimento.reconstituir(id, animal, null, StatusAtendimento.EM_ANDAMENTO,
+                LocalDateTime.now(), null, null, null, null,
+                List.of(new Diagnostico("C", "c", TipoDiagnostico.DEFINITIVO)),
+                List.of(), List.of()));
+
+        assertThat(contar("diagnostico")).isEqualTo(1);
+    }
 }
 
