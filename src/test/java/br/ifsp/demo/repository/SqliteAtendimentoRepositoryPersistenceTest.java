@@ -4,6 +4,10 @@ import br.ifsp.demo.exception.AtendimentoNaoEncontradoException;
 import br.ifsp.demo.model.abertura.*;
 import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
+import br.ifsp.demo.model.prescricao.ItemPrescricao;
+import br.ifsp.demo.model.prescricao.Prescricao;
+import br.ifsp.demo.model.prescricao.PrescricaoId;
+import br.ifsp.demo.model.prescricao.StatusPrescricao;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,6 +263,26 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(repository.buscarPorAnimalId(animal))
                 .extracting(Atendimento::getId)
                 .containsExactly(recente.getId(), meio.getId(), antigo.getId());
+    }
+
+    @Test
+    void salvar_comPrescricao_recuperaStatusEItensNaOrdem() {
+        Prescricao prescricao = Prescricao.reconstituir(PrescricaoId.novo(),
+                List.of(new ItemPrescricao("Zeta", 10, "ORAL", "8/8h", 5),
+                        new ItemPrescricao("Alfa", 20, "IV", "12/12h", 3)),
+                StatusPrescricao.FINALIZADA, LocalDateTime.now());
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(), List.of(prescricao), List.of());
+        repository.salvar(original);
+
+        Prescricao lida = repository.buscarUmPorAtendimentoId(original.getId()).getPrescricoes().getFirst();
+
+        assertThat(lida.getId()).isEqualTo(prescricao.getId());
+        assertThat(lida.getStatus()).isEqualTo(StatusPrescricao.FINALIZADA);
+        assertThat(lida.getItens()).extracting(ItemPrescricao::getMedicamento)
+                .containsExactly("Zeta", "Alfa");
+        assertThat(lida.getItens().getFirst().getDosagem()).isEqualTo(10);
     }
 }
 
