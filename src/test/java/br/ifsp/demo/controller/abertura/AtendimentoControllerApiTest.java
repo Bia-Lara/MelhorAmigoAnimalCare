@@ -196,5 +196,35 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+
+        @Test
+        @DisplayName("Should return 400 when justificativa is null")
+        void shouldReturn400WhenJustificativaIsNull() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of())
+                    .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
+
+        @Test
+        @DisplayName("Should return 400 when justificativa is blank")
+        void shouldReturn400WhenJustificativaIsBlank() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("justificativa", " "))
+                    .when().post("/api/v1/atendimentos/" + id + "/cancelamento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
