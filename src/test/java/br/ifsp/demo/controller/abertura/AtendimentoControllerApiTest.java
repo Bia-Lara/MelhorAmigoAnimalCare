@@ -112,5 +112,17 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(400)
                     .body("message", containsString("animalId"));
         }
+
+        @Test
+        @DisplayName("Should return 400 when agendamentoId is null")
+        void shouldReturn400WhenAgendamentoIdIsNull() {
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("animalId", UUID.randomUUID()))
+                    .when().post("/api/v1/atendimentos/agendados")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .body("message", containsString("agendamentoId"));
+        }
     }
 }
