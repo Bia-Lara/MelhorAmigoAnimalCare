@@ -1,9 +1,13 @@
 package br.ifsp.demo.controller.abertura;
 
 import br.ifsp.demo.controller.BaseApiIntegrationTest;
+import br.ifsp.demo.model.abertura.AnimalId;
+import br.ifsp.demo.model.abertura.Atendimento;
+import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import io.restassured.filter.log.LogDetail;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +23,9 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
     private static final String PASSWORD = "password";
 
     private String token;
+
+    @Autowired
+    private AtendimentoRepository atendimentoRepository;
 
     @BeforeEach
     void authSetup() {
@@ -54,6 +61,22 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .then().log().ifValidationFails(LogDetail.BODY)
                     .statusCode(400)
                     .body("message", containsString("animalId"));
+        }
+
+        @Test
+        @DisplayName("Should return 409 when animal already has an atendimento in progress")
+        void shouldReturn409WhenAnimalAlreadyInAtendimento() {
+            UUID id = UUID.randomUUID();
+            AnimalId animalId = AnimalId.of(id);
+            atendimentoRepository.salvar(Atendimento.abrirProntoAtendimento(animalId));
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("animalId", id))
+                    .when().post("/api/v1/atendimentos/pronto-atendimento")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .body("message", not(emptyOrNullString()));
         }
     }
 }
