@@ -99,4 +99,10 @@ public class AppointmentPageObject extends BasePageObject{
         return !driver.findElements(clearRecentButton).isEmpty()
                 && driver.findElement(clearRecentButton).isDisplayed();
     }
+
+    public String openingErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(openingError))
+                .getText();
+    }
 }
