@@ -70,6 +70,14 @@ public class LoginUiTest extends BaseSeleniumTest{
 
         assertThat(appointmentPage.heading()).isEqualTo("Atendimentos");
 
+    }
+
+    @Test
+    @DisplayName("shouldNavigateToRegistrationPage")
+    void shouldNavigateToRegistrationPage() {
+        loginPage.navigateToRegistrationPage();
+
+        assertThat(loginPage.currentUrl()).endsWith("/registrar");
 
     }
 
