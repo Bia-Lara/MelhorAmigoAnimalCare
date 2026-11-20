@@ -79,4 +79,26 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("message", not(emptyOrNullString()));
         }
     }
+
+    @Nested
+    @DisplayName("POST /agendados")
+    class Agendados {
+
+        @Test
+        @DisplayName("Should return 201 with body when animalId and agendamentoId are valid")
+        void shouldReturn201WhenRequestIsValid() {
+            UUID animalId = UUID.randomUUID();
+            UUID agendamentoId = UUID.randomUUID();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("animalId", animalId, "agendamentoId", agendamentoId))
+                    .when().post("/api/v1/atendimentos/agendados")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(201)
+                    .body("id", notNullValue())
+                    .body("animalId", equalTo(animalId.toString()))
+                    .body("agendamentoId", equalTo(agendamentoId.toString()));
+        }
+    }
 }
