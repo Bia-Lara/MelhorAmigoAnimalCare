@@ -54,4 +54,8 @@ public class AppointmentPageObject extends BasePageObject{
                 .until(ExpectedConditions.elementToBeClickable(searchButton))
                 .click();
     }
+
+    public void enterAppointmentId(String id){
+        driver.findElement(appointmentIdInput).sendKeys(id);
+    }
 }
