@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @Tag("ApiTest")
@@ -480,6 +481,30 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(404)
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /{id}/sinais-vitais")
+    class SinaisVitaisEndpoint {
+
+        @Test
+        @DisplayName("Should return 200 with the same vital signs that were sent")
+        void shouldReturn200WithSameVitalSigns() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+            SinaisVitais sent = new SinaisVitais(39, 90, 12.0);
+
+            SinaisVitais returned = given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(sent)
+                    .when().put("/api/v1/atendimentos/" + id + "/sinais-vitais")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .extract().jsonPath().getObject("sinaisVitais", SinaisVitais.class);
+
+            assertThat(returned).isEqualTo(sent);
         }
     }
 }
