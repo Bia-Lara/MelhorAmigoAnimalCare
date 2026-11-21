@@ -506,5 +506,19 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
 
             assertThat(returned).isEqualTo(sent);
         }
+
+        @Test
+        @DisplayName("Should return 404 when atendimento does not exists")
+        void shouldReturn404WhenAtendimentoDoesNotExists() {
+            given().contentType("application/json").port(port)
+                .header("Authorization", "Bearer " + token)
+                .body(EntityBuilder.createSinaisVitais())
+                .when().put("/api/v1/atendimentos/" + UUID.randomUUID() + "/sinais-vitais")
+                .then().log().ifValidationFails(LogDetail.BODY)
+                .statusCode(404)
+                .contentType(ContentType.JSON)
+                .body("message", not(emptyOrNullString()));
+        }
+
     }
 }
