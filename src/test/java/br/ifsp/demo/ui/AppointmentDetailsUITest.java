@@ -325,5 +325,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     }
 
 
+    @Test
+    @DisplayName("shouldAcceptDiagnosisDescriptionAboveMaximumLenght")
+    void shouldAcceptDiagnosisDescriptionAboveMaximumLenght() {
+        String code = faker.number().digits(10);
+        String description = "A".repeat(201);;
+        String type = "Presuntivo";
+        appointmentDetailsPage.addDiagnosis(code, description, type);
 
+        assertThat(appointmentDetailsPage.diagnosisDescriptionErrorMessage())
+                .isEqualTo("Máximo de 200 caracteres.");
+
+    }
 }
