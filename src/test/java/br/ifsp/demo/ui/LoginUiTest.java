@@ -1,5 +1,6 @@
 package br.ifsp.demo.ui;
 
+import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,6 @@ import static org.assertj.core.api.Assertions.*;
 @Tag("UITest")
 public class LoginUiTest extends BaseSeleniumTest{
     private LoginPageObject loginPage;
-    private static final String TEST_EMAIL = "teste@email.com";
-    private static final String TEST_PASSWORD = "123456";
 
     @Override
     protected void setInitialPage(){
@@ -64,7 +63,17 @@ public class LoginUiTest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldOpenAppointmentPageValidCredentials")
     void shouldOpenAppointmentPageValidCredentials() {
-        loginPage.authenticate(TEST_EMAIL, TEST_PASSWORD);
+        Faker faker = new Faker();
+        String name = faker.name().firstName();
+        String lastname = faker.name().lastName();
+        String email = faker.internet().emailAddress();
+        String password = faker.internet().password(6,10);
+
+        RegisterPageObject registerPage = new RegisterPageObject(driver);
+        registerPage.openRegisterPage();
+        registerPage.registerAccount(name, lastname, email, password, password);
+
+        loginPage.authenticate(email, password);
 
         AppointmentPageObject appointmentPage = new AppointmentPageObject(driver);
 
