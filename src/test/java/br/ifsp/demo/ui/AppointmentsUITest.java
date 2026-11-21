@@ -135,6 +135,27 @@ public class AppointmentsUITest extends BaseSeleniumTest {
 
     }
 
+    @Test
+    @DisplayName("shouldTrimWhitespaceWhenSearchinExistingAppointment")
+    void shouldTrimWhitespaceWhenSearchinExistingAppointment() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject createdAppointment = appointmentPage.clickOpenAppointment();
+
+        String appointmentId = createdAppointment.appointmentId();
+
+        AppointmentPageObject appointmentPage = createdAppointment.backToAppointments();
+
+        appointmentPage.enterAppointmentId(" " + appointmentId + " ");
+
+        AppointmentDetailsPageObject foundAppointment = appointmentPage.clickSearchAppointment();
+
+        assertThat(foundAppointment.appointmentId())
+                .isEqualTo(appointmentId);
+        
+    }
+
 
 
     
