@@ -29,6 +29,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
             By.cssSelector(".grid--2 .card:first-child .alert--success");
     private final By temperatureError = By.cssSelector(".field input[name='temperaturaC'] + .field__error");
     private final By heartRateError = By.cssSelector(".field input[name='frequenciaCardiaca'] + .field__error");
+    private final By weightError = By.cssSelector(".field input[name='pesoKg'] + .field__error");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -100,6 +101,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String heartRateErrorMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(heartRateError)).getText();
+    }
+
+    public String weightErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(weightError)).getText();
     }
 }
 

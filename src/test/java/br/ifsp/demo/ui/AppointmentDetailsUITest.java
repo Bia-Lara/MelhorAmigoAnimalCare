@@ -104,7 +104,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 "120.5",
                 String.valueOf(faker.number().randomDouble(2,1, 40)));
 
-        assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Use um número inteiro (bpm)");
+        assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Use um número inteiro (bpm).");
+
+    }
+
+    @DisplayName("shouldRejectZeroWeight")
+    void shouldRejectZeroWeight() {
+        appointmentDetailsPage.registerVitalSigns(String.valueOf(faker.number().randomDouble(1,35, 40)),
+                String.valueOf(faker.number().randomNumber()), "0");
+
+        assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Peso deve ser maior que zero.");
 
     }
 }
