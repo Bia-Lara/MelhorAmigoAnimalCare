@@ -79,7 +79,28 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         appointmentPage.clickOpenAppointment();
 
         assertThat(appointmentPage.openingErrorMessage()).isEqualTo("Animal - "  + animalId + " já possui atendimento em andamento!");
+    }
+
+    @Test
+    @DisplayName("shouldSearchExistingAppointment")
+    void shouldSearchExistingAppointment() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject createdAppointment = appointmentPage.clickOpenAppointment();
+
+        String appointmentId = createdAppointment.appointmentId();
+
+        AppointmentPageObject appointmentsPage = createdAppointment.backToAppointments();
+
+        appointmentsPage.enterAppointmentId(appointmentId);
+
+        AppointmentDetailsPageObject foundAppointment = appointmentsPage.clickSearchAppointment();
+
+        assertThat(foundAppointment.appointmentId()).isEqualTo(appointmentId);
 
     }
+
+
     
 }

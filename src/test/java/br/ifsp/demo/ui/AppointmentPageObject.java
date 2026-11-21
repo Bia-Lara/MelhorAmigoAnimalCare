@@ -59,10 +59,12 @@ public class AppointmentPageObject extends BasePageObject{
         throw new NoSuchElementException("Opening type not found: " + label);
     }
 
-    public void clickSearchAppointment(){
+    public AppointmentDetailsPageObject clickSearchAppointment(){
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(searchButton))
                 .click();
+
+        return new AppointmentDetailsPageObject(driver);
     }
 
     public void enterAppointmentId(String id){
@@ -124,4 +126,5 @@ public class AppointmentPageObject extends BasePageObject{
     public void selectFirstExistingAnimal(){
         new Select(driver.findElement(animalSelect)).selectByIndex(1);
     }
+
 }
