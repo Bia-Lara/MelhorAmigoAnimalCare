@@ -173,4 +173,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
     }
 
+    @Test
+    @DisplayName("shouldRejectChiefComplaintAboceMaximumLenght")
+    void shouldRejectChiefComplaintAboceMaximumLenght() {
+        String complaint = "A".repeat(101);
+
+        appointmentDetailsPage.registerAnmnesis(complaint, faker.lorem().sentence());
+
+        assertThat(appointmentDetailsPage.complaintErrorMessage())
+                .isEqualTo("Máximo de 100 caracteres.");
+
+    }
+
 }
