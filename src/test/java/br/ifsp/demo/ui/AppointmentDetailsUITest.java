@@ -337,4 +337,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("Máximo de 200 caracteres.");
 
     }
+
+    @Test
+    @DisplayName("shouldAddEmpiricDiagnosis")
+    void shouldAddEmpiricDiagnosis() {
+        String code = faker.number().digits(10);
+        String description = faker.lorem().sentence();
+        String type = "Empírico";
+        appointmentDetailsPage.addDiagnosis(code, description, type);
+
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description,type))
+                .isTrue();
+    }
 }
