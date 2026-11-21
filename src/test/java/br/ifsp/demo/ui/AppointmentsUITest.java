@@ -195,5 +195,28 @@ public class AppointmentsUITest extends BaseSeleniumTest {
 
     }
 
+    @Test
+    @DisplayName("shouldClearRecentAppointments")
+    void shouldClearRecentAppointments() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject createdAppointment = appointmentPage.clickOpenAppointment();
+
+        createdAppointment.appointmentId();
+
+        AppointmentPageObject appointmentsPage = createdAppointment.backToAppointments();
+
+        assertThat(appointmentPage.isClearRecentButtonDisplayed())
+                .isTrue();
+
+        appointmentPage.clearRecentAppointments();
+
+        assertThat(appointmentPage.recentAppointmentsMessage()).isEqualTo("Nenhum atendimento acessado ainda.");
+        assertThat(appointmentsPage.isClearRecentButtonDisplayed()).isFalse();
+
+
+
+    }
     
 }
