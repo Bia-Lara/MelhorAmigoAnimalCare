@@ -117,4 +117,30 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.weightErrorMessage()).isEqualTo("Peso deve ser maior que zero.");
 
     }
+
+    @Test
+    @DisplayName("shouldUpdateExistingVitalSigns")
+    void shouldUpdateExistingVitalSigns() {
+        String updatedTemperature = String.valueOf(faker.number().randomDouble(1,38,40));
+        String updatedHeartRate = String.valueOf(faker.number().randomNumber());
+        String updatedWeight = String.valueOf(faker.number().randomDouble(2,20,40));
+
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1,38,40)),
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,20,40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage()).isEqualTo("Sinais vitais salvos.");
+        assertThat(appointmentDetailsPage.vitalsSubmitButtonText()).isEqualTo("Atualizar");
+
+        appointmentDetailsPage.updateVitalSigns(updatedTemperature, updatedHeartRate, updatedWeight);
+
+        assertThat(appointmentDetailsPage.temperatureValue()).isEqualTo(updatedTemperature);
+        assertThat(appointmentDetailsPage.heartValue()).isEqualTo(updatedHeartRate);
+        assertThat(appointmentDetailsPage.weightValue()).isEqualTo(updatedWeight);
+
+    }
+
+
 }

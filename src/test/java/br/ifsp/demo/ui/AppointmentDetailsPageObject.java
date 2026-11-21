@@ -4,6 +4,7 @@ import com.github.javafaker.App;
 import com.github.javafaker.Weather;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -107,6 +108,48 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(weightError)).getText();
     }
+
+    public void updateVitalSigns(String temperature, String heartRate, String weight){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement previousMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(vitalsSavedMessage));
+
+        WebElement temperatureField = wait.until(ExpectedConditions.visibilityOfElementLocated(temperatureInput));
+        temperatureField.clear();
+        temperatureField.sendKeys(temperature);
+
+        WebElement heartRateField = wait.until(ExpectedConditions.visibilityOfElementLocated(heartRateInput));
+        heartRateField.clear();
+        heartRateField.sendKeys(heartRate);
+
+        WebElement weightField = wait.until(ExpectedConditions.visibilityOfElementLocated(weightInput));
+        weightField.clear();
+        weightField.sendKeys(weight);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(vitalsSavedMessage));
+
+        wait.until(ExpectedConditions.elementToBeClickable(registerVitalsButton)).click();
+        wait.until(ExpectedConditions.stalenessOf(previousMessage));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(vitalsSavedMessage));
+
+    }
+
+    public String temperatureValue(){
+        return driver.findElement(temperatureInput).getAttribute("value");
+    }
+
+    public String heartValue(){
+        return driver.findElement(heartRateInput).getAttribute("value");
+    }
+
+    public String weightValue(){
+        return driver.findElement(weightInput).getAttribute("value");
+    }
+
+    public String vitalsSubmitButtonText(){
+        return driver.findElement(registerVitalsButton).getText();
+    }
+
 }
 
 
