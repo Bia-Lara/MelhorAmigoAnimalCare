@@ -476,4 +476,25 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.examTimeValue()).isEqualTo(selectedTime);
 
     }
+
+    @Test
+    @DisplayName("shouldAddAnotherExamRequestRow")
+    void shouldAddAnotherExamRequestRow() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = faker.lorem().word();
+        LocalDate date = LocalDate.now().plusDays(1);
+        LocalTime time = LocalTime.of(9,0);
+
+        appointmentDetailsPage.fillFirstExamRequest(name, date, time.format(DateTimeFormatter.ofPattern("HH:mm")));
+
+        assertThat(appointmentDetailsPage.examRequestRowCount()).isEqualTo(1);
+
+        appointmentDetailsPage.addAnotherExam();
+
+        assertThat(appointmentDetailsPage.examRequestRowCount()).isEqualTo(2);
+        assertThat(appointmentDetailsPage.examNameValue()).isEqualTo(name);
+        assertThat(appointmentDetailsPage.isRemoveExamButtonDisplayed()).isTrue();
+        
+    }
 }

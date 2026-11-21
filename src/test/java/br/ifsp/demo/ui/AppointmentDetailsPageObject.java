@@ -58,6 +58,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By examDateButton = By.cssSelector(".dtp__trigger");
     private final By examTimeSelect = By.cssSelector(".dtp__time");
     private final By nextMonthButton = By.cssSelector(".dtp__nav[aria-label='Próximo mês']");
+    private final By addAnotherExamButton = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//button[normalize-space()='+ Adicionar exame']");
+    private final By examRequestRows = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//fieldset[contains(@class, 'item-row')]");
+    private final By removeExamButton = By.xpath("//fieldset[contains(@class, 'item-row')]//button[normalize-space()='Remover']");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -368,6 +371,23 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new Select(driver.findElement(examTimeSelect))
                 .getFirstSelectedOption()
                 .getText();
+    }
+
+    public void addAnotherExam() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(addAnotherExamButton)).click();
+        wait.until(ExpectedConditions.numberOfElementsToBe(examRequestRows, 2));
+    }
+
+    public int examRequestRowCount() {
+        return driver.findElements(examRequestRows).size();
+    }
+
+    public boolean isRemoveExamButtonDisplayed() {
+        return driver.findElements(removeExamButton)
+                .stream()
+                .anyMatch(WebElement::isDisplayed);
     }
 }
 
