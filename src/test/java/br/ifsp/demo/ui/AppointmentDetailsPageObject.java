@@ -7,10 +7,14 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class AppointmentDetailsPageObject extends BasePageObject{
     private final By appointmentId = By.cssSelector(".header-card h1.h-id");
@@ -50,6 +54,10 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By examsTab = By.id("tab-exames");
     private final By examRequestHeading = By.xpath("//h2[normalize-space()='Solicitar exames']");
     private final By requestedExamsHeading = By.xpath("//h2[normalize-space()='Exames solicitados']");
+    private final By examNameInput = By.cssSelector("input[placeholder='ex.: Hemograma completo']");
+    private final By examDateButton = By.cssSelector(".dtp__trigger");
+    private final By examTimeSelect = By.cssSelector(".dtp__time");
+    private final By nextMonthButton = By.cssSelector(".dtp__nav[aria-label='Próximo mês']");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -322,6 +330,44 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return driver.findElements(examRequestHeading)
                 .stream()
                 .anyMatch(WebElement::isDisplayed);
+    }
+
+    public void fillFirstExamRequest(String name, LocalDate examDate, String time){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(examNameInput)).sendKeys(name);
+        wait.until(ExpectedConditions.elementToBeClickable(examDateButton)).click();
+
+        if(examDate.getMonth() != LocalDate.now().getMonth()){
+            wait.until(ExpectedConditions.elementToBeClickable(nextMonthButton)).click();
+        }
+
+        String dateLabel = examDate.format(
+                DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", Locale.forLanguageTag("pt-BR"))
+        );
+
+        By examDay = By.xpath("//button[@aria-label='" + dateLabel + "']");
+
+        wait.until(ExpectedConditions.elementToBeClickable(examDay)).click();
+
+        new Select(wait.until(ExpectedConditions.visibilityOfElementLocated(examTimeSelect))).selectByVisibleText(time);
+
+    }
+
+    public String examNameValue(){
+        return driver.findElement(examNameInput).getAttribute("value");
+    }
+
+    public String examDateValue(){
+        return driver.findElement(examDateButton)
+                .findElement(By.cssSelector("span:first-child"))
+                .getText();
+    }
+
+    public String examTimeValue(){
+        return new Select(driver.findElement(examTimeSelect))
+                .getFirstSelectedOption()
+                .getText();
     }
 }
 

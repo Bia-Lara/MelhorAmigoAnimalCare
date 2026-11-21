@@ -5,6 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.*;
 
 @Tag("UITest")
@@ -451,6 +456,24 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         appointmentDetailsPage.openExamsTab();
 
         assertThat(appointmentDetailsPage.isExamRequestFormDisplayed()).isFalse();
+
+    }
+
+    @Test
+    @DisplayName("shouldFillSingleExamRequest")
+    void shouldFillSingleExamRequest() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = faker.lorem().word();
+        LocalDate date= LocalDate.now().plusDays(1);
+        String expectedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("pt-BR")));
+        String selectedTime = "09:00";
+
+        appointmentDetailsPage.fillFirstExamRequest(name, date, selectedTime);
+
+        assertThat(appointmentDetailsPage.examNameValue()).isEqualTo(name);
+        assertThat(appointmentDetailsPage.examDateValue()).isEqualTo(expectedDate);
+        assertThat(appointmentDetailsPage.examTimeValue()).isEqualTo(selectedTime);
 
     }
 }
