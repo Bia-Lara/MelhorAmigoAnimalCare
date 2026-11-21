@@ -72,4 +72,13 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
 
     }
+
+    @Test
+    @DisplayName("shouldRejectNegativeHeartRate")
+    void shouldRejectNegativeHeartRate() {
+        appointmentDetailsPage.registerVitalSigns("38","-1", "10.5");
+
+        assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
+
+    }
 }
