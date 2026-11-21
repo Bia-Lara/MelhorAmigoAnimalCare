@@ -150,7 +150,15 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
         assertThat(appointmentDetailsPage.complaintErrorMessage())
                 .isEqualTo("A queixa principal é obrigatória.");
+    }
 
+    @Test
+    @DisplayName("shouldRejectEmptyClinicalHistory")
+    void shouldRejectEmptyClinicalHistory() {
+        appointmentDetailsPage.registerAnmnesis(faker.lorem().sentence(), "");
+
+        assertThat(appointmentDetailsPage.historyErrorMessage())
+                .isEqualTo("O histórico clínico é obrigatório.");
     }
 
 
