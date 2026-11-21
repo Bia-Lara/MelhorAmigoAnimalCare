@@ -353,4 +353,27 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("message", not(emptyOrNullString()));
         }
     }
+
+    @Nested
+    @DisplayName("POST /{id}/reabertura")
+    class Reabertura {
+
+        @Test
+        @DisplayName("Should return 200 with EM_ANDAMENTO status when reopening within the window")
+        void shouldReturn200WhenReopeningWithinWindow() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            atendimento.concluir();
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/reabertura")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .body("status", equalTo("EM_ANDAMENTO"));
+        }
+    }
 }
