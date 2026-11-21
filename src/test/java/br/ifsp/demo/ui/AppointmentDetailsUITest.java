@@ -283,6 +283,19 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
         assertThat(appointmentDetailsPage.diagnosisDescriptionErrorMessage())
                 .isEqualTo("A descrição é obrigatória.");
+    }
+
+    @Test
+    @DisplayName("shouldAcceptDiagnosisCodeAtMaximumLenght")
+    void shouldAcceptDiagnosisCodeAtMaximumLenght() {
+        String code = faker.number().digits(10);
+        String description = faker.lorem().sentence();
+        String type = "Presuntivo";
+        appointmentDetailsPage.addDiagnosis(code, description, type);
+
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description,type))
+                .isTrue();
 
     }
+
 }
