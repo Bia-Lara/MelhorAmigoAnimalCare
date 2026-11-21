@@ -361,4 +361,14 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.hasDiagnosis(code, description,type))
                 .isTrue();
     }
+
+    @Test
+    @DisplayName("shouldDisableClinicalFieldAfterCancellation")
+    void shouldDisableClinicalFieldAfterCancellation() {
+        appointmentDetailsPage.cancelAppointment(faker.lorem().sentence());
+
+        assertThat(appointmentDetailsPage.clinicalFieldAreDisaled()).isTrue();
+        assertThat(appointmentDetailsPage.isDiagnosisFormDisplayed()).isFalse();
+        
+    }
 }

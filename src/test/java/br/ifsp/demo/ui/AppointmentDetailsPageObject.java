@@ -43,6 +43,10 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By diagnosisRequirement = By.xpath("//ul[@aria-label='Requisitos para concluir']/li[contains(., 'Ao menos um diagnóstico')]");
     private final By diagnosisCodeError = By.cssSelector(".field input[name='codigo'] + .field__error");
     private final By diagnosisDescriptionError = By.cssSelector(".field input[name='descricao'] + .field__error");
+    private final By clinicalInputs = By.cssSelector(
+            "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
+                    + "input[name='pesoKg'], input[name='queixaPrincipal'], "
+                    + "textarea[name='historicoClinico']");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -264,6 +268,19 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(diagnosisDescriptionError))
                 .getText();
+    }
+
+    public boolean clinicalFieldAreDisaled(){
+        List<WebElement> fields = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(clinicalInputs));
+
+        return fields.stream().noneMatch(WebElement::isEnabled);
+    }
+
+    public boolean isDiagnosisFormDisplayed(){
+        return driver.findElements(addDiagnosisButton)
+                .stream()
+                .anyMatch(WebElement::isDisplayed);
     }
 }
 
