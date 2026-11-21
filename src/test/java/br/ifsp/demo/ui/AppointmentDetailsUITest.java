@@ -161,5 +161,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("O histórico clínico é obrigatório.");
     }
 
+    @Test
+    @DisplayName("shouldAcceptChiefComplaintAtMaximumLength")
+    void shouldAcceptChiefComplaintAtMaximumLength() {
+        String complaint = "A".repeat(100);
+
+        appointmentDetailsPage.registerAnmnesis(complaint, faker.lorem().sentence());
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+    }
 
 }

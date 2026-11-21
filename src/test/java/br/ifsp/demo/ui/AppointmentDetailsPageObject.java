@@ -36,6 +36,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By registerAnamnesisButton = By.cssSelector(".grid--2 .card:nth-child(2) form button[type='submit']");
     private final By complaintError = By.cssSelector(".field input[name='queixaPrincipal'] + .field__error");
     private final By historyError = By.cssSelector(".field textarea[name='historicoClinico'] + .field__error");
+    private final By anamneseSavedMessage = By.cssSelector(".grid--2 .card:nth-child(2) .alert--success");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -173,6 +174,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String historyErrorMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(historyError))
+                .getText();
+    }
+
+    public String anamneseSavedMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(anamneseSavedMessage))
                 .getText();
     }
 
