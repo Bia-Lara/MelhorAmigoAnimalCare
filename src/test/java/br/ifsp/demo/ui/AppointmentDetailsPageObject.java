@@ -20,7 +20,13 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By cancellationReasonInput = By.cssSelector("dialog[open] textarea");
     private final By confirmCancelButton = By.cssSelector("dialog[open] button[type='submit']");
     private final By cancelledStatus = By.cssSelector(".header-card .badge--cancelado");
-
+    private final By temperatureInput = By.name("temperaturaC");
+    private final By heartRateInput = By.name("frequenciaCardiaca");
+    private final By weightInput = By.name("pesoKg");
+    private final By registerVitalsButton =
+            By.cssSelector(".grid--2 .card:first-child form button[type='submit']");
+    private final By vitalsSavedMessage =
+            By.cssSelector(".grid--2 .card:first-child .alert--success");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -67,6 +73,21 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         wait.until(ExpectedConditions.visibilityOfElementLocated(cancellationReasonInput)).sendKeys(justification);
         wait.until(ExpectedConditions.elementToBeClickable(confirmCancelButton)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(cancelledStatus));
+    }
+
+    public void registerVitalSigns(String temperature, String heartRate, String weight){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(temperatureInput)).sendKeys(temperature);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(heartRateInput)).sendKeys(heartRate);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(weightInput)).sendKeys(weight);
+        wait.until(ExpectedConditions.elementToBeClickable(registerVitalsButton)).click();
+
+    }
+
+    public String vitalsSaveMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(vitalsSavedMessage)).getText();
     }
 }
 

@@ -1,7 +1,13 @@
 package br.ifsp.demo.ui;
 
 import com.github.javafaker.Faker;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
+
+@Tag("UITest")
 public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
     private AppointmentDetailsPageObject appointmentDetailsPage;
@@ -29,5 +35,13 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
         appointmentDetailsPage = new AppointmentDetailsPageObject(driver);
 
+    }
+
+    @Test
+    @DisplayName("shouldRegisterValidVitalSigns")
+    void shouldRegisterValidVitalSigns() {
+        appointmentDetailsPage.registerVitalSigns("38.5", "120", "10.5");
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage()).isEqualTo("Sinais vitais salvos.");
     }
 }
