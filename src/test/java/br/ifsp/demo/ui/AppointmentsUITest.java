@@ -124,5 +124,18 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         
     }
 
+    @Test
+    @DisplayName("shouldShowErrorWhenSearchingMalformedAppointmentId")
+    void shouldShowErrorWhenSearchingMalformedAppointmentId() {
+        appointmentPage.enterAppointmentId("id-invalido");
+
+        AppointmentDetailsPageObject detailsPage = appointmentPage.clickSearchAppointment();
+
+        assertThat(detailsPage.loadErrorMessage()).isEqualTo("Valor inválido para o parâmetro 'id'.");
+
+    }
+
+
+
     
 }
