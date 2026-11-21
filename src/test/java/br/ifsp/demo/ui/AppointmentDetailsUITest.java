@@ -245,4 +245,14 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isTrue();
 
     }
+
+    @Test
+    @DisplayName("shouldRejectEmptyDiagnosisCode")
+    void shouldRejectEmptyDiagnosisCode() {
+        appointmentDetailsPage.addDiagnosis("", faker.lorem().sentence(), "Presuntivo");
+
+        assertThat(appointmentDetailsPage.diagnosisCodeErrorMessage())
+                .isEqualTo("O código é obrigatório.");
+
+    }
 }
