@@ -238,7 +238,7 @@ public class AppointmentsUITest extends BaseSeleniumTest {
 
         appointmentsPage = secondAppointment.backToAppointments();
 
-        assertThat(appointmentsPage.recentAppointmentShortIds()).containsExactly(secondId.substring(0,8) + "...", firstId.substring(0,8) + "...");
+        assertThat(appointmentsPage.recentAppointmentShortIds()).containsExactly(secondId.substring(0,8) + "…", firstId.substring(0,8) + "…");
 
     }
     
