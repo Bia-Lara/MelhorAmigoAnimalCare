@@ -442,4 +442,31 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("message", not(emptyOrNullString()));
         }
     }
+
+    @Nested
+    @DisplayName("GET /{id}")
+    class Buscar {
+
+        @Test
+        @DisplayName("Should return 200 with the atendimento data")
+        void shouldReturn200WithAtendimentoData() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().get("/api/v1/atendimentos/" + id)
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .body("animalId", equalTo(atendimento.getAnimalId().getValue().toString()))
+                    .body("status", equalTo("EM_ANDAMENTO"))
+                    .body("sinaisVitais", notNullValue())
+                    .body("diagnosticos", hasSize(1))
+                    .body("prescricoes", empty())
+                    .body("exames", empty());
+        }
+    }
 }
