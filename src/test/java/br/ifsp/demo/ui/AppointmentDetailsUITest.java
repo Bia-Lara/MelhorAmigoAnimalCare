@@ -298,4 +298,17 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
     }
 
+    @Test
+    @DisplayName("shouldRejectDiagnosisCodeAboveMaximumLenght")
+    void shouldRejectDiagnosisCodeMaximumLenght() {
+        String code = faker.number().digits(11);
+        String description = faker.lorem().sentence();
+        String type = "Presuntivo";
+        appointmentDetailsPage.addDiagnosis(code, description, type);
+
+        assertThat(appointmentDetailsPage.diagnosisCodeErrorMessage())
+                .isEqualTo("Máximo de 10 caracteres.");
+
+    }
+
 }
