@@ -64,6 +64,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By requestExamsButton = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//button[normalize-space()='Solicitar']");
     private final By requestedExamItems = By.cssSelector(".exam-item");
     private final By requestedExamNames = By.cssSelector(".exam-item strong");
+    private final By examResultInput = By.cssSelector(".exam-item .form--compact textarea");
+    private final By submitExamResultButton = By.cssSelector(".exam-item .form--compact button[type='submit']");
+    private final By examResultError = By.cssSelector(".exam-item .form--compact .field__error");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -408,6 +411,20 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .stream()
                 .map(WebElement::getText)
                 .toList();
+    }
+
+    public void submitExamResult(String result){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(examResultInput)).sendKeys(result);
+
+        wait.until(ExpectedConditions.elementToBeClickable(submitExamResultButton)).click();
+    }
+
+    public String examResultErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(examResultError))
+                .getText();
     }
 }
 

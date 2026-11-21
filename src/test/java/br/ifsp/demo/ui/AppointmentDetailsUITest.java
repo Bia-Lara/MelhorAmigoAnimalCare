@@ -513,4 +513,22 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.requestedExamNames()).contains(name);
 
     }
+
+    @Test
+    @DisplayName("shouldRejectEmptyExamResult")
+    void shouldRejectEmptyExamResult() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = faker.lorem().word();
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.submitExamRequest();
+        appointmentDetailsPage.submitExamResult("");
+
+        assertThat(appointmentDetailsPage.examResultErrorMessage())
+                .isEqualTo("O resultado deve ser informado.");
+
+    }
 }
