@@ -68,7 +68,9 @@ public class AppointmentPageObject extends BasePageObject{
     }
 
     public void enterAppointmentId(String id){
-        driver.findElement(appointmentIdInput).sendKeys(id);
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(appointmentIdInput))
+                .sendKeys(id);
     }
 
     public void selectNewAnimal(){
@@ -125,6 +127,12 @@ public class AppointmentPageObject extends BasePageObject{
 
     public void selectFirstExistingAnimal(){
         new Select(driver.findElement(animalSelect)).selectByIndex(1);
+    }
+
+    public boolean isSearchButtonEnabled(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(searchButton))
+                .isEnabled();
     }
 
 }
