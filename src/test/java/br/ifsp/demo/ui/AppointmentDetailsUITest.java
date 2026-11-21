@@ -431,4 +431,26 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.clinicalFieldAreDisaled()).isTrue();
         assertThat(appointmentDetailsPage.isDiagnosisFormDisplayed()).isFalse();
     }
+
+
+    @Test
+    @DisplayName("shouldHideExamRequestFormAfterConclusion")
+    void shouldHideExamRequestFormAfterConclusion() {
+        appointmentDetailsPage.registerVitalSigns(String.valueOf(faker.number().randomDouble(1,35,40)),
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
+
+        appointmentDetailsPage.registerAnmnesis(faker.lorem().sentence(), faker.lorem().sentence());
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+        String type = "Presuntivo";
+
+        appointmentDetailsPage.addDiagnosis(code,description,type);
+        appointmentDetailsPage.concludeAppointment();
+        appointmentDetailsPage.openExamsTab();
+
+        assertThat(appointmentDetailsPage.isExamRequestFormDisplayed()).isFalse();
+
+    }
 }
