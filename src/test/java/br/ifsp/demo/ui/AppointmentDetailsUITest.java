@@ -108,12 +108,13 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
     }
 
+    @Test
     @DisplayName("shouldRejectZeroWeight")
     void shouldRejectZeroWeight() {
         appointmentDetailsPage.registerVitalSigns(String.valueOf(faker.number().randomDouble(1,35, 40)),
                 String.valueOf(faker.number().randomNumber()), "0");
 
-        assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Peso deve ser maior que zero.");
+        assertThat(appointmentDetailsPage.weightErrorMessage()).isEqualTo("Peso deve ser maior que zero.");
 
     }
 }
