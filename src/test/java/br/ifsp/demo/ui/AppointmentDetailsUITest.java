@@ -53,4 +53,13 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
 
     }
+
+    @Test
+    @DisplayName("shouldRejectNegativeTemperature")
+    void shouldRejectNegativeTemperature() {
+        appointmentDetailsPage.registerVitalSigns("-1","120", "10.5");
+
+        assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
+
+    }
 }
