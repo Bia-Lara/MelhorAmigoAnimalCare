@@ -1,6 +1,9 @@
 package br.ifsp.demo.shared;
 
+import br.ifsp.demo.model.abertura.AnimalId;
+import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.clinico.Diagnostico;
+import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
 import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.security.user.Role;
@@ -39,5 +42,16 @@ public class EntityBuilder {
                 "Oral",
                 "8/8h",
                 faker.number().numberBetween(1, 10));
+    }
+
+    public static SinaisVitais createSinaisVitais(){
+        return new SinaisVitais(38, 80, 15);
+    }
+
+    public static Atendimento createCompleteAtendimento() {
+        Atendimento atendimento = Atendimento.abrirProntoAtendimento(AnimalId.of(UUID.randomUUID()));
+        atendimento.registrarSinaisVitais(createSinaisVitais());
+        atendimento.registrarDiagnostico(createRandomDiagnostico());
+        return atendimento;
     }
 }

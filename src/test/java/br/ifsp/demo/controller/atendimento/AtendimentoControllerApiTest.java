@@ -1,13 +1,11 @@
-package br.ifsp.demo.controller.abertura;
+package br.ifsp.demo.controller.atendimento;
 
 import br.ifsp.demo.controller.BaseApiIntegrationTest;
 import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.abertura.AtendimentoId;
 import br.ifsp.demo.model.abertura.StatusAtendimento;
-import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.SinaisVitais;
-import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import br.ifsp.demo.shared.EntityBuilder;
@@ -261,6 +259,24 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
     @DisplayName("POST /{id}/conclusao")
     class Conclusao {
         @Test
+        @DisplayName("Should return 200 with CONCLUIDO status when atendimento is complete")
+        void shouldReturn200WhenAtendimentoIsComplete() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/conclusao")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .body("status", equalTo("CONCLUIDO"))
+                    .body("dataHoraConclusao", notNullValue());
+        }
+
+        @Test
         @DisplayName("Should return 422 when atendimento has no vital signs")
         void shouldReturn422WhenNoVitalSigns() {
             UUID id = givenAtendimentoEmAndamento().getId().getValue();
@@ -306,9 +322,7 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
         @Test
         @DisplayName("Should return 409 when atendimento has an open prescription")
         void shouldReturn409WhenAtendimentoHasOpenPrescription() {
-            Atendimento atendimento = givenAtendimentoEmAndamento();
-            atendimento.registrarSinaisVitais(new SinaisVitais(10, 10, 10));
-            atendimento.registrarDiagnostico(EntityBuilder.createRandomDiagnostico());
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
             atendimento.emitirPrescricao(List.of(EntityBuilder.createRandomItemPrescricao()));
             atendimentoRepository.salvar(atendimento);
             UUID id = atendimento.getId().getValue();
@@ -325,9 +339,7 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
         @Test
         @DisplayName("Should return 409 when concluding a cancelled atendimento")
         void shouldReturn409WhenAtendimentoIsCancelled() {
-            Atendimento atendimento = givenAtendimentoEmAndamento();
-            atendimento.registrarSinaisVitais(new SinaisVitais(38.5, 90, 12.0));
-            atendimento.registrarDiagnostico(EntityBuilder.createRandomDiagnostico());
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
             atendimento.cancelar("Tutor desistiu do atendimento");
             atendimentoRepository.salvar(atendimento);
             UUID id = atendimento.getId().getValue();
