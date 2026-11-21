@@ -645,5 +645,23 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+
+        @Test
+        @DisplayName("Should return 409 when requesting exams for a concluded atendimento")
+        void shouldReturn409WhenAtendimentoIsConcluded() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            atendimento.concluir();
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("exames", List.of(examePayload())))
+                    .when().post("/api/v1/atendimentos/" + id + "/exames")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
