@@ -531,4 +531,23 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("O resultado deve ser informado.");
 
     }
+
+    @Test
+    @DisplayName("shouldRegisterExamResult")
+    void shouldRegisterExamResult() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = faker.lorem().word();
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String result = faker.lorem().sentence();
+
+        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.submitExamRequest();
+        appointmentDetailsPage.submitExamResult(result);
+
+        assertThat(appointmentDetailsPage.registeredExamResult())
+                .isEqualTo(result);
+
+    }
 }

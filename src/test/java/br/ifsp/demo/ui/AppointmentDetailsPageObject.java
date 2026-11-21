@@ -67,6 +67,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By examResultInput = By.cssSelector(".exam-item .form--compact textarea");
     private final By submitExamResultButton = By.cssSelector(".exam-item .form--compact button[type='submit']");
     private final By examResultError = By.cssSelector(".exam-item .form--compact .field__error");
+    private final By registeredExamResult = By.cssSelector(".exam-item__result");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -424,6 +425,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String examResultErrorMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(examResultError))
+                .getText();
+    }
+
+    public String registeredExamResult(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(registeredExamResult))
                 .getText();
     }
 }
