@@ -2,6 +2,7 @@ package br.ifsp.demo.shared;
 
 import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
+import br.ifsp.demo.model.clinico.Anamnese;
 import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.model.clinico.TipoDiagnostico;
@@ -53,5 +54,11 @@ public class EntityBuilder {
         atendimento.registrarSinaisVitais(createSinaisVitais());
         atendimento.registrarDiagnostico(createRandomDiagnostico());
         return atendimento;
+    }
+
+    public static Anamnese createAnamnese() {
+        return new Anamnese(
+                faker.lorem().characters(50),
+                faker.lorem().characters(200));
     }
 }

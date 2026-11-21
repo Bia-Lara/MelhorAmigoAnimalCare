@@ -5,6 +5,7 @@ import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.abertura.AtendimentoId;
 import br.ifsp.demo.model.abertura.StatusAtendimento;
+import br.ifsp.demo.model.clinico.Anamnese;
 import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
@@ -539,6 +540,30 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
 
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /{id}/anamnese")
+    class AnamneseEndpoint {
+
+        @Test
+        @DisplayName("Should return 200 with valid response")
+        void shouldReturn200WithValidResponse() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+            Anamnese sent = EntityBuilder.createAnamnese();
+
+            Anamnese returned = given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(sent)
+                    .when().put("/api/v1/atendimentos/" + id + "/anamnese")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .extract().jsonPath().getObject("anamnese", Anamnese.class);
+
+            assertThat(returned).usingRecursiveComparison().isEqualTo(sent);
         }
     }
 }
