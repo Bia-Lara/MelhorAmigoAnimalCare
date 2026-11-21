@@ -168,6 +168,32 @@ public class AppointmentsUITest extends BaseSeleniumTest {
     }
 
 
+    @Test
+    @DisplayName("shouldAllowNewEmergencyAppointmentForAnimalAfterCancellation")
+    void shouldAllowNewEmergencyAppointmentForAnimalAfterCancellation() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject previousAppointment = appointmentPage.clickOpenAppointment();
+
+        String previousAppointmentId = previousAppointment.appointmentId();
+        String animalId = previousAppointment.animalId();
+
+        previousAppointment.cancelAppointment(new Faker().lorem().sentence());
+
+        AppointmentPageObject appointmentsPage = previousAppointment.backToAppointments();
+
+        appointmentsPage.selectAppointment();
+        appointmentsPage.selectFirstExistingAnimal();
+
+        AppointmentDetailsPageObject newAppointment = appointmentsPage.clickOpenAppointment();
+
+        assertThat(newAppointment.appointmentId()).isNotBlank();
+        assertThat(newAppointment.appointmentId()).isNotEqualTo(previousAppointmentId);
+        assertThat(newAppointment.animalId()).isEqualTo(animalId);
+        assertThat(newAppointment.appointmentOrigin()).isEqualTo("Pronto atendimento");
+
+    }
 
     
 }

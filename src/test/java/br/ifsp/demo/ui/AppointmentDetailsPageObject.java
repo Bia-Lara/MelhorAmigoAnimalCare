@@ -16,6 +16,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By backToAppointmentsLink = By.cssSelector("a.back-link");
     private final By animalId = By.xpath("//dt[normalize-space()='Animal']/following-sibling::dd");
     private final By loadError = By.cssSelector(".alert--error > span");
+    private final By cancelButton = By.xpath(  "//section[contains(@class, 'header-card')]//button[normalize-space()='Cancelar atendimento']");
+    private final By cancellationReasonInput = By.cssSelector("dialog[open] textarea");
+    private final By confirmCancelButton = By.cssSelector("dialog[open] button[type='submit']");
+    private final By cancelledStatus = By.cssSelector(".header-card .badge--cancelado");
+
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -55,6 +60,14 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .getText();
     }
 
+    public void cancelAppointment(String justification){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(cancelButton)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(cancellationReasonInput)).sendKeys(justification);
+        wait.until(ExpectedConditions.elementToBeClickable(confirmCancelButton)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(cancelledStatus));
+    }
 }
 
 
