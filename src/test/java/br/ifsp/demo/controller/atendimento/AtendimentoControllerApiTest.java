@@ -8,6 +8,9 @@ import br.ifsp.demo.model.abertura.StatusAtendimento;
 import br.ifsp.demo.model.clinico.Anamnese;
 import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.SinaisVitais;
+import br.ifsp.demo.model.exame.Exame;
+import br.ifsp.demo.model.exame.ExameId;
+import br.ifsp.demo.model.exame.ExameSolicitado;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import br.ifsp.demo.shared.EntityBuilder;
@@ -662,6 +665,34 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(409)
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH /{id}/exames/{exameId}/resultado")
+    class ResultadoExame {
+
+        @Test
+        @DisplayName("Should return 200 with the result that was sent")
+        void shouldReturn200WithSameResult() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            UUID exameId = UUID.randomUUID();
+            atendimento.addExame(new ExameSolicitado(
+                    new Exame(ExameId.of(exameId), "Próstata"), LocalDateTime.now().plusDays(1).withHour(13)));
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("resultado", "Nada"))
+                    .when().patch("/api/v1/atendimentos/" + id + "/exames/" + exameId + "/resultado")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("exameId", equalTo(exameId.toString()))
+                    .body("nome", equalTo("Próstata"))
+                    .body("resultado", equalTo("Nada"))
+                    .body("status", notNullValue());
         }
     }
 }
