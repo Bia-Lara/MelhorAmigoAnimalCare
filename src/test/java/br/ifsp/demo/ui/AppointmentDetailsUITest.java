@@ -44,4 +44,13 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
         assertThat(appointmentDetailsPage.vitalsSaveMessage()).isEqualTo("Sinais vitais salvos.");
     }
+
+    @Test
+    @DisplayName("shouldRejectZeroTemperature")
+    void shouldRejectZeroTemperature() {
+        appointmentDetailsPage.registerVitalSigns("0","120", "10.5");
+
+        assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
+
+    }
 }

@@ -27,6 +27,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
             By.cssSelector(".grid--2 .card:first-child form button[type='submit']");
     private final By vitalsSavedMessage =
             By.cssSelector(".grid--2 .card:first-child .alert--success");
+    private final By temperatureError = By.cssSelector(".field input[name='temperaturaC'] + .field__error");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -88,6 +89,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String vitalsSaveMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(vitalsSavedMessage)).getText();
+    }
+
+    public String temperatureErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(temperatureError)).getText();
     }
 }
 
