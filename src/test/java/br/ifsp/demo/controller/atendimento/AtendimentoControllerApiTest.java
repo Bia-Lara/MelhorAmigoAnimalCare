@@ -591,4 +591,34 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(returned).containsExactly(sent);
         }
     }
+
+    @Nested
+    @DisplayName("POST /{id}/exames")
+    class ExamesEndpoint {
+
+        @Test
+        @DisplayName("Should return 200 with valid response")
+        void shouldReturn200WithValidResponse() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+            UUID exameId = UUID.randomUUID();
+
+            Map<String, Object> exame = Map.of(
+                    "exameId", exameId,
+                    "nome", "Próstata",
+                    "data", LocalDateTime.now().plusDays(1).withHour(13));
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("exames", List.of(exame)))
+                    .when().post("/api/v1/atendimentos/" + id + "/exames")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .body("exames", hasSize(1))
+                    .body("exames[0].exameId", equalTo(exameId.toString()))
+                    .body("exames[0].nome", equalTo("Próstata"))
+                    .body("exames[0].status", notNullValue());
+        }
+    }
 }
