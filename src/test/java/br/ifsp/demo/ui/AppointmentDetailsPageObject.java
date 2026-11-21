@@ -61,6 +61,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By addAnotherExamButton = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//button[normalize-space()='+ Adicionar exame']");
     private final By examRequestRows = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//fieldset[contains(@class, 'item-row')]");
     private final By removeExamButton = By.xpath("//fieldset[contains(@class, 'item-row')]//button[normalize-space()='Remover']");
+    private final By requestExamsButton = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//button[normalize-space()='Solicitar']");
+    private final By requestedExamItems = By.cssSelector(".exam-item");
+    private final By requestedExamNames = By.cssSelector(".exam-item strong");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -388,6 +391,23 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return driver.findElements(removeExamButton)
                 .stream()
                 .anyMatch(WebElement::isDisplayed);
+    }
+
+    public  void submitExamRequest(){
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(requestExamsButton)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(requestedExamItems));
+    }
+
+    public List<String> requestedExamNames(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(requestedExamNames));
+
+        return driver.findElements(requestedExamNames)
+                .stream()
+                .map(WebElement::getText)
+                .toList();
     }
 }
 

@@ -497,4 +497,20 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.isRemoveExamButtonDisplayed()).isTrue();
         
     }
+
+    @Test
+    @DisplayName("shouldSubmitSingleExamRequest")
+    void shouldSubmitSingleExamRequest() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = faker.lorem().word();
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.requestedExamNames()).contains(name);
+
+    }
 }
