@@ -349,4 +349,16 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.hasDiagnosis(code, description,type))
                 .isTrue();
     }
+
+    @Test
+    @DisplayName("shouldAddDefinitiveDiagnosis")
+    void shouldAddDefinitiveDiagnosis() {
+        String code = faker.number().digits(10);
+        String description = faker.lorem().sentence();
+        String type = "Definitivo";
+        appointmentDetailsPage.addDiagnosis(code, description, type);
+
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description,type))
+                .isTrue();
+    }
 }
