@@ -15,6 +15,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
             By.xpath("//dt[normalize-space()='Origem']/following-sibling::dd");
     private final By backToAppointmentsLink = By.cssSelector("a.back-link");
     private final By animalId = By.xpath("//dt[normalize-space()='Animal']/following-sibling::dd");
+    private final By loadError = By.cssSelector(".alert--error > span");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -45,6 +46,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String animalId(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(animalId))
+                .getText();
+    }
+
+    public String loadErrorMessage(){
+        return new WebDriverWait(driver,Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(loadError))
                 .getText();
     }
 
