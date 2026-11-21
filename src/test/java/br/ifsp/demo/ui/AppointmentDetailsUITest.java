@@ -143,4 +143,15 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     }
 
 
+    @Test
+    @DisplayName("shouldRejectEmptyChiefComplaint")
+    void shouldRejectEmptyChiefComplaint() {
+        appointmentDetailsPage.registerAnmnesis("", faker.lorem().sentence());
+
+        assertThat(appointmentDetailsPage.complaintErrorMessage())
+                .isEqualTo("A queixa principal é obrigatória.");
+
+    }
+
+
 }

@@ -31,6 +31,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By temperatureError = By.cssSelector(".field input[name='temperaturaC'] + .field__error");
     private final By heartRateError = By.cssSelector(".field input[name='frequenciaCardiaca'] + .field__error");
     private final By weightError = By.cssSelector(".field input[name='pesoKg'] + .field__error");
+    private final By complaintInput = By.name("queixaPrincipal");
+    private final By historyInput = By.name("historicoClinico");
+    private final By registerAnamnesisButton = By.cssSelector(".grid--2 .card:nth-child(2) form button[type='submit']");
+    private final By complaintError = By.cssSelector(".field input[name='queixaPrincipal'] + .field__error");
+
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -149,6 +154,23 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String vitalsSubmitButtonText(){
         return driver.findElement(registerVitalsButton).getText();
     }
+
+    public void registerAnmnesis(String complaint, String history){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(complaintInput)).sendKeys(complaint);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(historyInput)).sendKeys(history);
+
+        wait.until(ExpectedConditions.elementToBeClickable(registerAnamnesisButton)).click();
+    }
+
+    public String complaintErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(complaintError))
+                .getText();
+    }
+
+
 
 }
 
