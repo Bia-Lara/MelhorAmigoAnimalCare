@@ -6,6 +6,7 @@ import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.abertura.AtendimentoId;
 import br.ifsp.demo.model.abertura.StatusAtendimento;
 import br.ifsp.demo.model.clinico.Anamnese;
+import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.SinaisVitais;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @Tag("ApiTest")
@@ -563,7 +564,31 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("id", equalTo(id.toString()))
                     .extract().jsonPath().getObject("anamnese", Anamnese.class);
 
-            assertThat(returned).usingRecursiveComparison().isEqualTo(sent);
+            assertThat(returned).isEqualTo(sent);
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /{id}/diagnosticos")
+    class DiagnosticosEndpoint {
+
+        @Test
+        @DisplayName("Should return 200 with valid response")
+        void shouldReturn200WithValidResponse() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+            Diagnostico sent = EntityBuilder.createRandomDiagnostico();
+
+            List<Diagnostico> returned = given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(sent)
+                    .when().post("/api/v1/atendimentos/" + id + "/diagnosticos")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("id", equalTo(id.toString()))
+                    .extract().jsonPath().getList("diagnosticos", Diagnostico.class);
+
+            assertThat(returned).containsExactly(sent);
         }
     }
 }
