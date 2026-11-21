@@ -9,11 +9,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class AppointmentDetailsPageObject extends BasePageObject{
     private final By appointmentId = By.cssSelector(".header-card h1.h-id");
-    private final By appointmentOrigin =
-            By.xpath("//dt[normalize-space()='Origem']/following-sibling::dd");
+    private final By appointmentOrigin = By.xpath("//dt[normalize-space()='Origem']/following-sibling::dd");
     private final By backToAppointmentsLink = By.cssSelector("a.back-link");
     private final By animalId = By.xpath("//dt[normalize-space()='Animal']/following-sibling::dd");
     private final By loadError = By.cssSelector(".alert--error > span");
@@ -24,10 +24,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By temperatureInput = By.name("temperaturaC");
     private final By heartRateInput = By.name("frequenciaCardiaca");
     private final By weightInput = By.name("pesoKg");
-    private final By registerVitalsButton =
-            By.cssSelector(".grid--2 .card:first-child form button[type='submit']");
-    private final By vitalsSavedMessage =
-            By.cssSelector(".grid--2 .card:first-child .alert--success");
+    private final By registerVitalsButton = By.cssSelector(".grid--2 .card:first-child form button[type='submit']");
+    private final By vitalsSavedMessage = By.cssSelector(".grid--2 .card:first-child .alert--success");
     private final By temperatureError = By.cssSelector(".field input[name='temperaturaC'] + .field__error");
     private final By heartRateError = By.cssSelector(".field input[name='frequenciaCardiaca'] + .field__error");
     private final By weightError = By.cssSelector(".field input[name='pesoKg'] + .field__error");
@@ -37,6 +35,13 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By complaintError = By.cssSelector(".field input[name='queixaPrincipal'] + .field__error");
     private final By historyError = By.cssSelector(".field textarea[name='historicoClinico'] + .field__error");
     private final By anamneseSavedMessage = By.cssSelector(".grid--2 .card:nth-child(2) .alert--success");
+    private final By diagnosisCodeInput = By.name("codigo");
+    private final By diagnosisDescriptionInput = By.name("descricao");
+    private final By diagnosisTypeInput = By.name("tipo");
+    private final By addDiagnosisButton = By.cssSelector(".form--divided button[type='submit']");
+    private final By diagnosisRows = By.cssSelector(".table tbody tr");
+    private final By diagnosisRequirement = By.xpath("//ul[@aria-label='Requisitos para concluir']/li[contains(., 'Ao menos um diagnóstico')]");
+
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -214,6 +219,38 @@ public class AppointmentDetailsPageObject extends BasePageObject{
 
     public String anamnesisSubmitButtonText(){
         return driver.findElement(registerAnamnesisButton).getText();
+    }
+
+    public void addDiagnosis(String code, String description, String type){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(diagnosisCodeInput)).sendKeys(code);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(diagnosisDescriptionInput)).sendKeys(description);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(diagnosisTypeInput)).sendKeys(type);
+        wait.until(ExpectedConditions.elementToBeClickable(addDiagnosisButton)).click();
+
+    }
+
+    public boolean hasDiagnosis(String code, String description, String type){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        List<WebElement> rows = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(diagnosisRows));
+
+        return rows.stream().anyMatch(row -> {
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+
+            return cells.size() == 3
+                    && cells.get(0).getText().equals(code)
+                    && cells.get(1).getText().equals(description)
+                    && cells.get(2).getText().equals(type);
+        });
+    }
+
+    public boolean isDiagnosisRequirementComplete(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(diagnosisRequirement))
+                .getAttribute("class")
+                .contains("is-ok");
     }
 
 }

@@ -228,4 +228,21 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.historyValue()).isEqualTo(updateHistory);
 
     }
+
+    @Test
+    @DisplayName("shouldAddValidDiagnosis")
+    void shouldAddValidDiagnosis() {
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+        String type = "Presuntivo";
+
+        appointmentDetailsPage.addDiagnosis(code,description,type);
+
+        assertThat(appointmentDetailsPage.hasDiagnosis(code,description,type))
+                .isTrue();
+
+        assertThat(appointmentDetailsPage.isDiagnosisRequirementComplete())
+                .isTrue();
+
+    }
 }
