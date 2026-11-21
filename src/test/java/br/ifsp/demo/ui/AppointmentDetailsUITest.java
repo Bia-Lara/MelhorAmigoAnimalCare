@@ -11,10 +11,10 @@ import static org.assertj.core.api.Assertions.*;
 public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
     private AppointmentDetailsPageObject appointmentDetailsPage;
+    Faker faker = new Faker();
 
     @Override
     protected  void setInitialPage(){
-        Faker faker = new Faker();
 
         String name = faker.name().firstName();
         String lastname = faker.name().lastName();
@@ -79,6 +79,20 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         appointmentDetailsPage.registerVitalSigns("38","-1", "10.5");
 
         assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
+
+    }
+
+
+    @Test
+    @DisplayName("shouldRejectDecimalHeartRate")
+    void shouldRejectDecimalHeartRate() {
+        Faker faker = new Faker();
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1,35, 40)),
+                "120.5",
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
+
+        assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Use um número inteiro (bpm)");
 
     }
 }
