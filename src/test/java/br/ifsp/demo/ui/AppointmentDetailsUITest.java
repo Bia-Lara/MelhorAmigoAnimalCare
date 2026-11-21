@@ -274,7 +274,15 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.diagnosisCodeErrorMessage())
                 .isEqualTo("O código é obrigatório.");
 
+    }
 
+    @Test
+    @DisplayName("shouldRejectWhitespaceOnlyDiagnosisDescription")
+    void shouldRejectWhitespaceOnlyDiagnosisDescription() {
+        appointmentDetailsPage.addDiagnosis(faker.lorem().sentence(), " ", "Presuntivo");
+
+        assertThat(appointmentDetailsPage.diagnosisDescriptionErrorMessage())
+                .isEqualTo("A descrição é obrigatória.");
 
     }
 }
