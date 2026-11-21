@@ -694,5 +694,21 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("resultado", equalTo("Nada"))
                     .body("status", notNullValue());
         }
+
+        @Test
+        @DisplayName("Should return 404 when exam does not exists")
+        void shouldReturn404WhenExamDoesNotExists() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("resultado", "Nada"))
+                    .when().patch("/api/v1/atendimentos/" + id + "/exames/" + UUID.randomUUID() + "/resultado")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(404)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
