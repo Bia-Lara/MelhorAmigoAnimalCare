@@ -135,4 +135,12 @@ public class AppointmentPageObject extends BasePageObject{
                 .isEnabled();
     }
 
+    public List<String> recentAppointmentShortIds(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(recentAppointments));
+
+        return driver.findElements(recentAppointments)
+                .stream()
+                .map(appointment -> appointment.findElement(By.cssSelector(".mono")).getText()).toList();
+    }
 }

@@ -215,7 +215,30 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         assertThat(appointmentPage.recentAppointmentsMessage()).isEqualTo("Nenhum atendimento acessado ainda.");
         assertThat(appointmentsPage.isClearRecentButtonDisplayed()).isFalse();
 
+    }
 
+    @Test
+    @DisplayName("shouldShowMostRecentAppointmentFirst")
+    void shouldShowMostRecentAppointmentFirst() {
+        appointmentPage.selectAppointment();
+        appointmentPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject firstAppointment = appointmentPage.clickOpenAppointment();
+
+        String firstId = firstAppointment.appointmentId();
+
+        AppointmentPageObject appointmentsPage = firstAppointment.backToAppointments();
+
+        appointmentsPage.selectAppointment();
+        appointmentsPage.selectNewAnimal();
+
+        AppointmentDetailsPageObject secondAppointment = appointmentsPage.clickOpenAppointment();
+
+        String secondId = secondAppointment.appointmentId();
+
+        appointmentsPage = secondAppointment.backToAppointments();
+
+        assertThat(appointmentsPage.recentAppointmentShortIds()).containsExactly(secondId.substring(0,8) + "...", firstId.substring(0,8) + "...");
 
     }
     
