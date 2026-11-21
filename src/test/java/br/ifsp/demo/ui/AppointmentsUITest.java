@@ -156,6 +156,17 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         
     }
 
+    @Test
+    @DisplayName("shouldKeepSearchButtonDisabledWhenAppointmentIdContainsOnlySpaces")
+    void shouldKeepSearchButtonDisabledWhenAppointmentIdContainsOnlySpaces() {
+        appointmentPage.enterAppointmentId("  ");
+
+        assertThat(appointmentPage.isSearchButtonEnabled()).isFalse();
+        assertThat(appointmentPage.heading()).isEqualTo("Atendimentos");
+
+
+    }
+
 
 
     
