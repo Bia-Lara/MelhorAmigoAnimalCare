@@ -42,6 +42,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By diagnosisRows = By.cssSelector(".table tbody tr");
     private final By diagnosisRequirement = By.xpath("//ul[@aria-label='Requisitos para concluir']/li[contains(., 'Ao menos um diagnóstico')]");
     private final By diagnosisCodeError = By.cssSelector(".field input[name='codigo'] + .field__error");
+    private final By diagnosisDescriptionError = By.cssSelector(".field input[name='descricao'] + .field__error");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -256,6 +257,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String diagnosisCodeErrorMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(diagnosisCodeError))
+                .getText();
+    }
+
+    public String diagnosisDescriptionErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(diagnosisDescriptionError))
                 .getText();
     }
 }
