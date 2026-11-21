@@ -207,4 +207,25 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.anamneseSavedMessage())
                 .isEqualTo("Anamnese salva.");
     }
+
+    @Test
+    @DisplayName("shouldUpdateExistingAnamnesis")
+    void shouldUpdateExistingAnamnesis() {
+        String updateComplaint = faker.lorem().sentence();
+        String updateHistory = faker.lorem().sentence();
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage()).isEqualTo("Anamnese salva.");
+        assertThat(appointmentDetailsPage.anamnesisSubmitButtonText()).isEqualTo("Atualizar");
+
+        appointmentDetailsPage.updateAnamnesis(updateComplaint, updateHistory);
+
+        assertThat(appointmentDetailsPage.complaintValue()).isEqualTo(updateComplaint);
+        assertThat(appointmentDetailsPage.historyValue()).isEqualTo(updateHistory);
+
+    }
 }

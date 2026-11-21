@@ -183,6 +183,39 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .getText();
     }
 
+    public void updateAnamnesis(String complaint, String history){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement previousMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(anamneseSavedMessage));
+
+        WebElement complaintField = wait.until(ExpectedConditions.visibilityOfElementLocated(complaintInput));
+        complaintField.clear();
+        complaintField.sendKeys(complaint);
+
+        WebElement historyField = wait.until(ExpectedConditions.visibilityOfElementLocated(historyInput));
+        historyField.clear();
+        historyField.sendKeys(history);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(anamneseSavedMessage));
+
+        wait.until(ExpectedConditions.elementToBeClickable(registerAnamnesisButton)).click();
+        wait.until(ExpectedConditions.stalenessOf(previousMessage));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(anamneseSavedMessage));
+
+    }
+
+    public String complaintValue(){
+        return driver.findElement(complaintInput).getAttribute("value");
+    }
+
+    public String historyValue(){
+        return driver.findElement(historyInput).getAttribute("value");
+    }
+
+    public String anamnesisSubmitButtonText(){
+        return driver.findElement(registerAnamnesisButton).getText();
+    }
+
 }
 
 
