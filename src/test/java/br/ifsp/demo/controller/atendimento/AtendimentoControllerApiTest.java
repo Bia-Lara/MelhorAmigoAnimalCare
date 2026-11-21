@@ -421,5 +421,25 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("message", not(emptyOrNullString()));
         }
 
+        @Test
+        @DisplayName("Should return 422 when reopening after the 24h window")
+        void shouldReturn422WhenWindowExpired() {
+            Atendimento expirado = Atendimento.reconstituir(
+                    AtendimentoId.novo(), AnimalId.of(UUID.randomUUID()), null,
+                    StatusAtendimento.CONCLUIDO,
+                    LocalDateTime.now().minusHours(26),
+                    LocalDateTime.now().minusHours(25),
+                    null, null, null, List.of(), List.of(), List.of());
+            atendimentoRepository.salvar(expirado);
+            UUID id = expirado.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/reabertura")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(422)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
