@@ -62,4 +62,14 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
 
     }
+
+
+    @Test
+    @DisplayName("shouldRejectZeroHeartRate")
+    void shouldRejectZeroHeartRate() {
+        appointmentDetailsPage.registerVitalSigns("38","0", "10.5");
+
+        assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
+
+    }
 }
