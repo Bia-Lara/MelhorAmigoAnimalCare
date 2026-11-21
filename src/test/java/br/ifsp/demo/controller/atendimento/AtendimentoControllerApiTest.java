@@ -520,5 +520,25 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                 .body("message", not(emptyOrNullString()));
         }
 
+        @Test
+        @DisplayName("Should return 409 when atendimento is concluded")
+        void shouldReturn404WhenAtendimentoIsConcluded() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            atendimento.concluir();
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            SinaisVitais sent = new SinaisVitais(39, 90, 12.0);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(sent)
+                    .when().put("/api/v1/atendimentos/" + id + "/sinais-vitais")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+
+        }
     }
 }
