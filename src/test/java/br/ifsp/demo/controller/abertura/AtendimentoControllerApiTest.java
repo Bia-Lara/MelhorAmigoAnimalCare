@@ -5,9 +5,12 @@ import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.abertura.AtendimentoId;
 import br.ifsp.demo.model.abertura.StatusAtendimento;
+import br.ifsp.demo.model.clinico.Diagnostico;
 import br.ifsp.demo.model.clinico.SinaisVitais;
+import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
+import br.ifsp.demo.shared.EntityBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
@@ -296,6 +299,25 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .when().post("/api/v1/atendimentos/" + UUID.randomUUID() + "/conclusao")
                     .then().log().ifValidationFails(LogDetail.BODY)
                     .statusCode(404)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
+
+        @Test
+        @DisplayName("Should return 409 when atendimento has an open prescription")
+        void shouldReturn409WhenAtendimentoHasOpenPrescription() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            atendimento.registrarSinaisVitais(new SinaisVitais(10, 10, 10));
+            atendimento.registrarDiagnostico(EntityBuilder.createRandomDiagnostico());
+            atendimento.emitirPrescricao(List.of(EntityBuilder.createRandomItemPrescricao()));
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().post("/api/v1/atendimentos/" + id + "/conclusao")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }

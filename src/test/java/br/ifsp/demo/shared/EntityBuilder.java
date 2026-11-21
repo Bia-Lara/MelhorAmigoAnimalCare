@@ -1,5 +1,8 @@
 package br.ifsp.demo.shared;
 
+import br.ifsp.demo.model.clinico.Diagnostico;
+import br.ifsp.demo.model.clinico.TipoDiagnostico;
+import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.security.user.Role;
 import br.ifsp.demo.security.user.User;
 import com.github.javafaker.Faker;
@@ -19,5 +22,22 @@ public class EntityBuilder {
                 .password(password)
                 .role(Role.USER)
                 .build();
+    }
+
+    public static Diagnostico createRandomDiagnostico() {
+        return new Diagnostico(
+                String.valueOf(faker.number().numberBetween(1000, 9999)),
+                faker.artist().name(),
+                TipoDiagnostico.EMPIRICO
+        );
+    }
+
+    public static ItemPrescricao createRandomItemPrescricao() {
+        return new ItemPrescricao(
+                "Dipirona",
+                faker.number().numberBetween(1, 500),
+                "Oral",
+                "8/8h",
+                faker.number().numberBetween(1, 10));
     }
 }
