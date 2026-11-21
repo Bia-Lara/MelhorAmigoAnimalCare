@@ -43,6 +43,13 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
         return atendimento;
     }
 
+    private Map<String, Object> examePayload() {
+        return Map.of(
+                "exameId", UUID.randomUUID(),
+                "nome", "Próstata",
+                "data", LocalDateTime.now().plusDays(1).withHour(13));
+    }
+
     @BeforeEach
     void authSetup() {
         User user = registerUser(PASSWORD);
@@ -619,6 +626,24 @@ class AtendimentoControllerApiTest extends BaseApiIntegrationTest {
                     .body("exames[0].exameId", equalTo(exameId.toString()))
                     .body("exames[0].nome", equalTo("Próstata"))
                     .body("exames[0].status", notNullValue());
+        }
+
+        @Test
+        @DisplayName("Should return 409 when requesting exams for a cancelled atendimento")
+        void shouldReturn409WhenAtendimentoIsCancelled() {
+            Atendimento atendimento = givenAtendimentoEmAndamento();
+            atendimento.cancelar("Tutor desistiu do atendimento");
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("exames", List.of(examePayload())))
+                    .when().post("/api/v1/atendimentos/" + id + "/exames")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
         }
     }
 }
