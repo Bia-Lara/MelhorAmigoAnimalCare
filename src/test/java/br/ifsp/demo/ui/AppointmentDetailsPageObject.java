@@ -3,6 +3,7 @@ package br.ifsp.demo.ui;
 import com.github.javafaker.App;
 import com.github.javafaker.Weather;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -43,10 +44,14 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By diagnosisRequirement = By.xpath("//ul[@aria-label='Requisitos para concluir']/li[contains(., 'Ao menos um diagnóstico')]");
     private final By diagnosisCodeError = By.cssSelector(".field input[name='codigo'] + .field__error");
     private final By diagnosisDescriptionError = By.cssSelector(".field input[name='descricao'] + .field__error");
+    private final By concludeAppointmentButton = By.xpath("//section[contains(@class, 'header-card')]//button[normalize-space()='Concluir atendimento']");
+    private final By confirmConclusionButton = By.cssSelector("dialog[open] button[type='submit']");
+    private final By completedStatus = By.cssSelector(".header-card .badge--concluido");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
                     + "textarea[name='historicoClinico']");
+
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -281,6 +286,25 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return driver.findElements(addDiagnosisButton)
                 .stream()
                 .anyMatch(WebElement::isDisplayed);
+    }
+
+    public boolean isConcludeAppointmentButtonEnabled(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(concludeAppointmentButton))
+                .isEnabled();
+    }
+
+    public void concludeAppointment(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(concludeAppointmentButton)).sendKeys(Keys.RETURN);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(confirmConclusionButton));
+        wait.until(ExpectedConditions.elementToBeClickable(confirmConclusionButton)).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(completedStatus));
+    }
+
+    public boolean isAppointmentConcluded(){
+        return !driver.findElements(completedStatus).isEmpty();
     }
 }
 

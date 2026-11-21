@@ -371,4 +371,33 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.isDiagnosisFormDisplayed()).isFalse();
         
     }
+
+    @Test
+    @DisplayName("shouldConcludeAppointmentWhenRequirementsAreMet")
+    void shouldConcludeAppointmentWhenRequirementsAreMet() {
+        appointmentDetailsPage.registerVitalSigns(String.valueOf(faker.number().randomDouble(1,35,40)),
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage()).isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(faker.lorem().sentence(), faker.lorem().sentence());
+        assertThat(appointmentDetailsPage.anamneseSavedMessage()).isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+        String type = "Presuntivo";
+
+        appointmentDetailsPage.addDiagnosis(code,description,type);
+
+        assertThat(appointmentDetailsPage.hasDiagnosis(code,description,type))
+                .isTrue();
+
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isTrue();
+
+        appointmentDetailsPage.concludeAppointment();
+        assertThat(appointmentDetailsPage.isAppointmentConcluded()).isTrue();
+
+    }
 }
