@@ -194,7 +194,17 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
 
         assertThat(appointmentDetailsPage.historyErrorMessage())
                 .isEqualTo("Máximo de 500 caracteres.");
-
     }
 
+
+    @Test
+    @DisplayName("shouldAcceptClinicalHistoryAtMaximumLength")
+    void shouldAcceptClinicalHistoryAtMaximumLength() {
+        String history = "A".repeat(500);
+
+        appointmentDetailsPage.registerAnmnesis(faker.lorem().sentence(), history);
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+    }
 }
