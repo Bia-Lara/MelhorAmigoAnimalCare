@@ -40,7 +40,9 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldRegisterValidVitalSigns")
     void shouldRegisterValidVitalSigns() {
-        appointmentDetailsPage.registerVitalSigns("38.5", "120", "10.5");
+        appointmentDetailsPage.registerVitalSigns("38.5",
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
 
         assertThat(appointmentDetailsPage.vitalsSaveMessage()).isEqualTo("Sinais vitais salvos.");
     }
@@ -48,7 +50,9 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldRejectZeroTemperature")
     void shouldRejectZeroTemperature() {
-        appointmentDetailsPage.registerVitalSigns("0","120", "10.5");
+        appointmentDetailsPage.registerVitalSigns("0",
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
 
         assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
 
@@ -57,7 +61,9 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldRejectNegativeTemperature")
     void shouldRejectNegativeTemperature() {
-        appointmentDetailsPage.registerVitalSigns("-1","120", "10.5");
+        appointmentDetailsPage.registerVitalSigns("-1",
+                String.valueOf(faker.number().randomNumber()),
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
 
         assertThat(appointmentDetailsPage.temperatureErrorMessage()).isEqualTo("Temperatura deve ser maior que zero.");
 
@@ -67,7 +73,10 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldRejectZeroHeartRate")
     void shouldRejectZeroHeartRate() {
-        appointmentDetailsPage.registerVitalSigns("38","0", "10.5");
+        appointmentDetailsPage.registerVitalSigns(String.valueOf(
+                faker.number().randomDouble(1,35, 40)),
+                "0",
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
 
         assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
 
@@ -76,7 +85,10 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     @Test
     @DisplayName("shouldRejectNegativeHeartRate")
     void shouldRejectNegativeHeartRate() {
-        appointmentDetailsPage.registerVitalSigns("38","-1", "10.5");
+        appointmentDetailsPage.registerVitalSigns(String.valueOf(
+                faker.number().randomDouble(1,35, 40)),
+                "-1",
+                String.valueOf(faker.number().randomDouble(2,1, 40)));
 
         assertThat(appointmentDetailsPage.heartRateErrorMessage()).isEqualTo("Frequência cardíaca deve ser maior que zero.");
 
