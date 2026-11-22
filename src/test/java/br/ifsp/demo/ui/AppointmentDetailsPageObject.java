@@ -372,7 +372,10 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         );
         row = rows.get(index);
 
-        new Select(row.findElement(examTimeSelect)).selectByVisibleText(time);
+        if(time !=null && !time.isBlank()){
+            new Select(row.findElement(examTimeSelect))
+                    .selectByVisibleText(time);
+        }
     }
 
     public String examNameValue(){
