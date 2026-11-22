@@ -89,6 +89,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionMedicationNames = By.cssSelector(".rx-item strong");
     private final By prescriptionMedicationError = By.cssSelector(".grid--item .field:nth-child(1) .field__error");
     private final By prescriptionDosageError = By.cssSelector(".grid--item .field:nth-child(2) .field__error");
+    private final By prescriptionItem = By.cssSelector(".rx-item");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -605,6 +606,14 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(prescriptionDosageError))
                 .getText();
     }
+
+    public String prescriptionItemText(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(prescriptionItem))
+                .getText();
+    }
+
+
 }
 
 
