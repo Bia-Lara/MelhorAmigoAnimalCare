@@ -2,6 +2,8 @@ package br.ifsp.demo.ui;
 
 import com.github.javafaker.App;
 import com.github.javafaker.Weather;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -86,6 +88,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By submitPrescriptionButton = By.xpath("//button[normalize-space()='Emitir prescrição']");
     private final By prescriptionMedicationNames = By.cssSelector(".rx-item strong");
     private final By prescriptionMedicationError = By.cssSelector(".grid--item .field:nth-child(1) .field__error");
+    private final By prescriptionDosageError = By.cssSelector(".grid--item .field:nth-child(2) .field__error");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -595,6 +598,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(prescriptionMedicationError))
                 .getText();
 
+    }
+
+    public String prescriptionDosageErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(prescriptionDosageError))
+                .getText();
     }
 }
 

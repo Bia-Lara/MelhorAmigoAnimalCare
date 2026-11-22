@@ -69,4 +69,23 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.prescriptionMedicationErrorMessage())
                 .isEqualTo("Obrigatório.");
     }
+
+    @Test
+    @DisplayName("shouldRejectPrescriptionWithZeroDosage")
+    void shouldRejectPrescriptionWithZeroDosage() {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String medication = faker.medical().medicineName();
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(medication, "0", "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        assertThat(appointmentDetailsPage.prescriptionDosageErrorMessage())
+                .isEqualTo("Inteiro maior que zero.");
+    }
+
+
 }
