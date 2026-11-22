@@ -632,6 +632,22 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
     }
 
     @Test
+    @DisplayName("shouldTrimExamName")
+    void shouldTrimExamName() {
+        appointmentDetailsPage.openExamsTab();
+
+        String name = " " + faker.lorem().sentence() + " ";
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, time);
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.requestedExamNames())
+                .containsExactly(name.trim());
+
+    }
+
+    @Test
     @DisplayName("shouldRejectExamRequestWithoutDateAndTime")
     void shouldRejectExamRequestWithoutDateAndTime() {
         appointmentDetailsPage.openExamsTab();
