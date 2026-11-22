@@ -59,7 +59,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
     @ParameterizedTest
     @ValueSource(strings = {"0", "-1", "0.1", ""})
     @DisplayName("shouldRejectPrescriptionDosage")
-    void shouldRejectPrescriptionWithZeroDosage() {
+    void shouldRejectPrescriptionWithZeroDosage(String dosage) {
 
         appointmentDetailsPage.openPrescriptionTab();
 
@@ -67,7 +67,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, "0", "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionDosageErrorMessage())
