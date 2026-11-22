@@ -92,6 +92,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionItem = By.cssSelector(".rx-item");
     private final By prescriptionFrequencyError = By.cssSelector(".grid--item .field:nth-child(4) .field__error");
     private final By prescriptionDaysError =  By.cssSelector(".grid--item .field:nth-child(5) .field__error");
+    private final By prescriptionItemRows = By.cssSelector("form fieldset.item-row");
+    private final By addPrescriptionItemButton = By.cssSelector("form .row--between button.btn--secondary");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -560,23 +562,18 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .getText();
     }
 
-    public void fillPrescriptionItem(String medication, String dosage, String route, String frequency, String days){
+    public void fillPrescriptionItem(int index, String medication, String dosage, String route, String frequency, String days){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        List<WebElement> rows = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItemRows));
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionMedicationInput))
-                .sendKeys(medication);
+        WebElement row = rows.get(index);
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionDosageInput))
-                .sendKeys(dosage);
-
-        new Select(driver.findElement(prescriptionRouteSelect))
+        row.findElement(prescriptionMedicationInput).sendKeys(medication);
+        row.findElement(prescriptionDosageInput).sendKeys(dosage);
+        new Select(row.findElement(prescriptionRouteSelect))
                 .selectByVisibleText(route);
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionFrequencyInput))
-                .sendKeys(frequency);
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionDaysInput))
-                .sendKeys(days);
+        row.findElement(prescriptionFrequencyInput).sendKeys(frequency);
+        row.findElement(prescriptionDaysInput).sendKeys(days);
 
     }
 
@@ -625,6 +622,17 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(prescriptionDaysError))
                 .getText();
+    }
+
+    public void addAnotherPrescriptionItem(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        int currentRows = driver.findElements(prescriptionItemRows).size();
+
+        wait.until(ExpectedConditions.elementToBeClickable(addPrescriptionItemButton))
+                .click();
+
+        wait.until(ExpectedConditions.numberOfElementsToBe(prescriptionItemRows, currentRows + 1));
     }
 
 }

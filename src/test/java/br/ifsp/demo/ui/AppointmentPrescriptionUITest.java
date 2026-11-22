@@ -30,7 +30,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionMedicationNames())
@@ -49,7 +49,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionMedicationErrorMessage())
@@ -67,7 +67,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionDosageErrorMessage())
@@ -94,7 +94,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, route, frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, route, frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionItemText())
@@ -113,7 +113,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String dosage = String.valueOf(faker.number().numberBetween(1,10));
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionFrequencyErrorMessage())
@@ -131,10 +131,31 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String dosage = String.valueOf(faker.number().numberBetween(1,10));
 
-        appointmentDetailsPage.fillPrescriptionItem(medication, dosage , "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage , "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionDaysErrorMessage())
                 .isEqualTo("Inteiro maior que zero.");
+    }
+
+    @Test
+    @DisplayName("shouldEmitPrescriptionWithMultipleItems")
+    void shouldEmitPrescriptionWithMultipleItems() {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String secondMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.addAnotherPrescriptionItem();
+        appointmentDetailsPage.fillPrescriptionItem(1, secondMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(firstMedication, secondMedication);
     }
 }
