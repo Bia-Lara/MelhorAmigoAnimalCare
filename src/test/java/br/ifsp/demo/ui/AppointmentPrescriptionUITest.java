@@ -254,4 +254,26 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.hasPrescriptionItemActionsAt(0))
                 .isFalse();
     }
+
+    @Test
+    @DisplayName("shouldHideItemActionsAfterCancelingPrescription")
+    void shouldHideItemActionsAfterCancelingPrescription() {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        appointmentDetailsPage.cancelIssuedPrescription();
+
+        assertThat(appointmentDetailsPage.isPrescriptionCancelled())
+                .isTrue();
+        assertThat(appointmentDetailsPage.hasPrescriptionItemActionsAt(0))
+                .isFalse();
+    }
 }

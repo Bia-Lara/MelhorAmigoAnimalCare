@@ -104,6 +104,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionFinalizedStatus = By.cssSelector(".badge--finalizada");
     private final By prescriptionItemActions = By.xpath(".//button[normalize-space()='Editar' or normalize-space()='Remover']");
     private final By confirmAlertPrescription = By.xpath("//dialog[@open]//h3[normalize-space()='Finalizar prescrição?']");
+    private final By cancelPrescriptionButton = By.xpath("//section[contains(@class, 'card')][.//ul[contains(@class, 'rx-list')]]" + "//button[normalize-space()='Cancelar prescrição']");
+    private final By prescriptionCancelledStatus = By.cssSelector(".badge--cancelada");
+    private final By confirmCancelAlertPrescription = By.xpath("//dialog[@open]//h3[normalize-space()='Cancelar prescrição?']");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -743,6 +746,26 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItems));
 
         return !items.get(index).findElements(prescriptionItemActions).isEmpty();
+    }
+
+    public void cancelIssuedPrescription(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(cancelPrescriptionButton))
+                .click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(confirmCancelAlertPrescription));
+
+        wait.until(ExpectedConditions.elementToBeClickable(confirmCancelButton))
+                        .click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionCancelledStatus));
+    }
+
+    public boolean isPrescriptionCancelled(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(prescriptionCancelledStatus))
+                .isDisplayed();
     }
 }
 
