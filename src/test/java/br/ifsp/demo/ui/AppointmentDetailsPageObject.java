@@ -513,6 +513,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .anyMatch(WebElement::isEnabled);
     }
 
+    public boolean isExamResultFormDisplayed(){
+        return driver.findElements(submitExamResultButton)
+                .stream()
+                .anyMatch(WebElement::isDisplayed);
+    }
+
 }
 
 

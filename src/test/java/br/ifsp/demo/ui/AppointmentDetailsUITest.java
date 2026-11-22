@@ -585,6 +585,9 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.registeredExamResult())
                 .isEqualTo(result);
 
+        assertThat(appointmentDetailsPage.isExamResultFormDisplayed())
+                .isFalse();
+
     }
 
     @Test
