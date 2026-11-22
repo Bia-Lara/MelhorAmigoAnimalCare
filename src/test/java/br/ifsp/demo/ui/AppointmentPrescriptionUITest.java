@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UI Test")
@@ -232,5 +233,25 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
 
         assertThat(appointmentDetailsPage.prescriptionMedicationNames())
                 .containsExactly(firstMedication);
+    }
+
+    @Test
+    @DisplayName("shouldHideActionsAfterFinalizingPrescription")
+    void shouldHideActionsAfterFinalizingPrescription() {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        appointmentDetailsPage.finalizeIssuedPrescription();
+
+        assertThat(appointmentDetailsPage.hasPrescriptionItemActionsAt(0))
+                .isFalse();
     }
 }

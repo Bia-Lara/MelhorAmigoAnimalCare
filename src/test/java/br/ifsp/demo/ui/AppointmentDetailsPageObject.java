@@ -78,6 +78,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
                     + "textarea[name='historicoClinico']");
 
+
     private final By prescriptionsTab = By.id("tab-prescricoes");
     private final By noPrescriptionsMessage = By.cssSelector("p.empty");
     private final By prescriptionMedicationInput = By.cssSelector(".grid--item .field:nth-child(1) input");
@@ -97,8 +98,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionItems = By.cssSelector(".rx-list .rx-item");
     private final By editItemButton = By.cssSelector("button.btn--ghost");
     private final By editingItem = By.cssSelector(".rx-item--editing");
-    private final By editedMedicationInput = By.cssSelector(".grid--item .field:nth-child(1) input");
     private final By saveItemButton =  By.xpath(".//button[normalize-space()='Salvar item']");
+    private final By finalizePrescriptionButton = By.xpath("//section[contains(@class, 'card')][.//ul[contains(@class, 'rx-list')]]" + "//button[normalize-space()='Finalizar']");
+    private final By confirmFinalizePrescriptionButton = By.xpath("//dialog[@open]//button[normalize-space()='Finalizar']");
+    private final By prescriptionFinalizedStatus = By.cssSelector(".badge--finalizada");
+    private final By prescriptionItemActions = By.xpath(".//button[normalize-space()='Editar' or normalize-space()='Remover']");
+    private final By confirmAlertPrescription = By.xpath("//dialog[@open]//h3[normalize-space()='Finalizar prescrição?']");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -716,6 +721,28 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 prescriptionItems,
                 remainingItems
         ));
+    }
+
+    public void finalizeIssuedPrescription(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(finalizePrescriptionButton))
+                .click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(confirmAlertPrescription));
+
+        wait.until(ExpectedConditions.elementToBeClickable(confirmFinalizePrescriptionButton))
+                .click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionFinalizedStatus));
+
+    }
+
+    public boolean hasPrescriptionItemActionsAt(int index){
+        List<WebElement> items = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItems));
+
+        return !items.get(index).findElements(prescriptionItemActions).isEmpty();
     }
 }
 
