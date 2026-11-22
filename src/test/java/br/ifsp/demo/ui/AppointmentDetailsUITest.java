@@ -469,7 +469,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         String expectedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("pt-BR")));
         String selectedTime = "09:00";
 
-        appointmentDetailsPage.fillFirstExamRequest(name, date, selectedTime);
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, selectedTime);
 
         assertThat(appointmentDetailsPage.examNameValue()).isEqualTo(name);
         assertThat(appointmentDetailsPage.examDateValue()).isEqualTo(expectedDate);
@@ -486,7 +486,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         LocalDate date = LocalDate.now().plusDays(1);
         LocalTime time = LocalTime.of(9,0);
 
-        appointmentDetailsPage.fillFirstExamRequest(name, date, time.format(DateTimeFormatter.ofPattern("HH:mm")));
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, time.format(DateTimeFormatter.ofPattern("HH:mm")));
 
         assertThat(appointmentDetailsPage.examRequestRowCount()).isEqualTo(1);
 
@@ -507,7 +507,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         LocalDate date = LocalDate.now().plusDays(1);
         String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, time);
         appointmentDetailsPage.submitExamRequest();
 
         assertThat(appointmentDetailsPage.requestedExamNames()).contains(name);
@@ -523,7 +523,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         LocalDate date = LocalDate.now().plusDays(1);
         String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, time);
         appointmentDetailsPage.submitExamRequest();
         appointmentDetailsPage.submitExamResult("");
 
@@ -542,7 +542,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
         String result = faker.lorem().sentence();
 
-        appointmentDetailsPage.fillFirstExamRequest(name, date, time);
+        appointmentDetailsPage.fillExamRequestAt(0, name, date, time);
         appointmentDetailsPage.submitExamRequest();
         appointmentDetailsPage.submitExamResult(result);
 

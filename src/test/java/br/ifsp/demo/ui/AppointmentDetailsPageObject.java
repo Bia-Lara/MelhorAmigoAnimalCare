@@ -342,26 +342,35 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .anyMatch(WebElement::isDisplayed);
     }
 
-    public void fillFirstExamRequest(String name, LocalDate examDate, String time){
+    public void fillExamRequestAt(int index, String name, LocalDate examDate, String time){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(examNameInput)).sendKeys(name);
-        wait.until(ExpectedConditions.elementToBeClickable(examDateButton)).click();
+        List<WebElement> rows = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows));
+        WebElement row = rows.get(index);
 
-        if(examDate.getMonth() != LocalDate.now().getMonth()){
+        row.findElement(examNameInput).sendKeys(name);
+        row.findElement(examDateButton).click();
+
+        if (examDate.getMonth() != LocalDate.now().getMonth()) {
             wait.until(ExpectedConditions.elementToBeClickable(nextMonthButton)).click();
         }
 
         String dateLabel = examDate.format(
-                DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", Locale.forLanguageTag("pt-BR"))
+                DateTimeFormatter.ofPattern(
+                        "EEEE, d 'de' MMMM 'de' yyyy",
+                        Locale.forLanguageTag("pt-BR")
+                )
         );
 
         By examDay = By.xpath("//button[@aria-label='" + dateLabel + "']");
-
         wait.until(ExpectedConditions.elementToBeClickable(examDay)).click();
 
-        new Select(wait.until(ExpectedConditions.visibilityOfElementLocated(examTimeSelect))).selectByVisibleText(time);
+        rows = wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows)
+        );
+        row = rows.get(index);
 
+        new Select(row.findElement(examTimeSelect)).selectByVisibleText(time);
     }
 
     public String examNameValue(){
@@ -433,6 +442,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(registeredExamResult))
                 .getText();
     }
+
+
 }
 
 
