@@ -51,6 +51,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By concludeAppointmentButton = By.xpath("//section[contains(@class, 'header-card')]//button[normalize-space()='Concluir atendimento']");
     private final By confirmConclusionButton = By.cssSelector("dialog[open] button[type='submit']");
     private final By completedStatus = By.cssSelector(".header-card .badge--concluido");
+
     private final By examsTab = By.id("tab-exames");
     private final By examRequestHeading = By.xpath("//h2[normalize-space()='Solicitar exames']");
     private final By requestedExamsHeading = By.xpath("//h2[normalize-space()='Exames solicitados']");
@@ -74,6 +75,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
                     + "textarea[name='historicoClinico']");
+
+    private final By prescriptionsTab = By.id("tab-prescricoes");
+    private final By noPrescriptionsMessage = By.cssSelector("p.empty");
 
 
     public AppointmentDetailsPageObject(WebDriver driver){
@@ -330,6 +334,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return !driver.findElements(completedStatus).isEmpty();
     }
 
+    //---------Exames--------
+
     public void openExamsTab(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -522,6 +528,22 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String noRequestedExamsMessage() {
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(noRequestedExamsMessage))
+                .getText();
+    }
+
+
+    //---------Prescrições--------
+
+    public void openPrescriptionTab(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(prescriptionsTab)).click();
+        wait.until(ExpectedConditions.attributeToBe(prescriptionsTab, "aria-selected", "true"));
+    }
+
+    public String noPrescriptionsMessage(){
+        return new WebDriverWait(driver,Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(noPrescriptionsMessage))
                 .getText();
     }
 }
