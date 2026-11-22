@@ -38,9 +38,10 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
 
     }
 
-    @Test
-    @DisplayName("shouldRejectPrescriptionWithoutMedication")
-    void shouldRejectPrescriptionWithoutMedication() {
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    @DisplayName("shouldRejectPrescriptionMedication")
+    void shouldRejectPrescriptionWithoutMedication(String medication) {
 
         appointmentDetailsPage.openPrescriptionTab();
 
@@ -48,32 +49,16 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
         String days = String.valueOf(faker.number().numberBetween(1,30));
 
-        appointmentDetailsPage.fillPrescriptionItem("", dosage, "Oral", frequency,days);
+        appointmentDetailsPage.fillPrescriptionItem(medication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
         assertThat(appointmentDetailsPage.prescriptionMedicationErrorMessage())
                 .isEqualTo("Obrigatório.");
     }
 
-    @Test
-    @DisplayName("shouldRejectPrescriptionWithWhitespaceOnlyMedication")
-    void shouldRejectPrescriptionWithWhitespaceOnlyMedication() {
-
-        appointmentDetailsPage.openPrescriptionTab();
-
-        String dosage = String.valueOf(faker.number().numberBetween(1,10));
-        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
-        String days = String.valueOf(faker.number().numberBetween(1,30));
-
-        appointmentDetailsPage.fillPrescriptionItem(" ", dosage, "Oral", frequency,days);
-        appointmentDetailsPage.submitPrescription();
-
-        assertThat(appointmentDetailsPage.prescriptionMedicationErrorMessage())
-                .isEqualTo("Obrigatório.");
-    }
-
-    @Test
-    @DisplayName("shouldRejectPrescriptionWithZeroDosage")
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "-1", "0.1"})
+    @DisplayName("shouldRejectPrescriptionDosage")
     void shouldRejectPrescriptionWithZeroDosage() {
 
         appointmentDetailsPage.openPrescriptionTab();
@@ -89,39 +74,6 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .isEqualTo("Inteiro maior que zero.");
     }
 
-    @Test
-    @DisplayName("shouldRejectPrescriptionWithNegativeDosage")
-    void shouldRejectPrescriptionWithNegativeDosage() {
-
-        appointmentDetailsPage.openPrescriptionTab();
-
-        String medication = faker.medical().medicineName();
-        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
-        String days = String.valueOf(faker.number().numberBetween(1,30));
-
-        appointmentDetailsPage.fillPrescriptionItem(medication, "-1", "Oral", frequency,days);
-        appointmentDetailsPage.submitPrescription();
-
-        assertThat(appointmentDetailsPage.prescriptionDosageErrorMessage())
-                .isEqualTo("Inteiro maior que zero.");
-    }
-
-    @Test
-    @DisplayName("shouldRejectPrescriptionWithDecimalDosage")
-    void shouldRejectPrescriptionWithDecimalDosage() {
-
-        appointmentDetailsPage.openPrescriptionTab();
-
-        String medication = faker.medical().medicineName();
-        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
-        String days = String.valueOf(faker.number().numberBetween(1,30));
-
-        appointmentDetailsPage.fillPrescriptionItem(medication, "0.1", "Oral", frequency,days);
-        appointmentDetailsPage.submitPrescription();
-
-        assertThat(appointmentDetailsPage.prescriptionDosageErrorMessage())
-                .isEqualTo("Inteiro maior que zero.");
-    }
 
     @ParameterizedTest(name = "shouldEmitPrescriptionWithRoute {0}")
     @ValueSource(strings = {
