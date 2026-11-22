@@ -168,4 +168,21 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .isEqualTo("Obrigatória.");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"0", "-1", "0.1"})
+    @DisplayName("shouldRejectDays")
+    void shouldRejectDays(String days) {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String medication = faker.medical().medicineName();
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+
+        appointmentDetailsPage.fillPrescriptionItem(medication, dosage , "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        assertThat(appointmentDetailsPage.prescriptionDaysErrorMessage())
+                .isEqualTo("Inteiro maior que zero.");
+    }
 }
