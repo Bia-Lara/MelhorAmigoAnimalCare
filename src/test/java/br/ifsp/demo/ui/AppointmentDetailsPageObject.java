@@ -62,7 +62,6 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By examRequestRows = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//fieldset[contains(@class, 'item-row')]");
     private final By removeExamButton = By.xpath("//fieldset[contains(@class, 'item-row')]//button[normalize-space()='Remover']");
     private final By requestExamsButton = By.xpath("//h2[normalize-space()='Solicitar exames']/ancestor::section[contains(@class, 'card')]//button[normalize-space()='Solicitar']");
-    private final By requestedExamItems = By.cssSelector(".exam-item");
     private final By requestedExamNames = By.cssSelector(".exam-item strong");
     private final By examResultInput = By.cssSelector(".exam-item .form--compact textarea");
     private final By submitExamResultButton = By.cssSelector(".exam-item .form--compact button[type='submit']");
@@ -70,6 +69,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By registeredExamResult = By.cssSelector(".exam-item__result");
     private final By examNameError =  By.cssSelector(".field input[placeholder='ex.: Hemograma completo'] + .field__error");
     private final By examDateError = By.cssSelector(".field .dtp + .field__error");
+    private final By noRequestedExamsMessage =  By.cssSelector("p.empty");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -519,6 +519,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .anyMatch(WebElement::isDisplayed);
     }
 
+    public String noRequestedExamsMessage() {
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(noRequestedExamsMessage))
+                .getText();
+    }
 }
 
 

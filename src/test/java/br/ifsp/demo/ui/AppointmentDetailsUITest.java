@@ -704,4 +704,14 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         assertThat(appointmentDetailsPage.isExamDateSelectable(0, yesterday))
                 .isFalse();
     }
+
+    @Test
+    @DisplayName("shouldShowEmptyStateWhenThereAreNoRequestedExams")
+    void shouldShowEmptyStateWhenThereAreNoRequestedExams() {
+        appointmentDetailsPage.openExamsTab();
+
+        assertThat(appointmentDetailsPage.noRequestedExamsMessage())
+                .isEqualTo("Nenhum exame solicitado.");
+
+    }
 }
