@@ -57,7 +57,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"0", "-1", "0.1"})
+    @ValueSource(strings = {"0", "-1", "0.1", ""})
     @DisplayName("shouldRejectPrescriptionDosage")
     void shouldRejectPrescriptionWithZeroDosage() {
 
@@ -121,7 +121,7 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"0", "-1", "0.1"})
+    @ValueSource(strings = {"0", "-1", "0.1", ""})
     @DisplayName("shouldRejectDays")
     void shouldRejectDays(String days) {
 
