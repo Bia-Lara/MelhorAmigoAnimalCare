@@ -78,6 +78,13 @@ public class AppointmentDetailsPageObject extends BasePageObject{
 
     private final By prescriptionsTab = By.id("tab-prescricoes");
     private final By noPrescriptionsMessage = By.cssSelector("p.empty");
+    private final By prescriptionMedicationInput = By.cssSelector(".grid--item .field:nth-child(1) input");
+    private final By prescriptionDosageInput = By.cssSelector(".grid--item .field:nth-child(2) input");
+    private final By prescriptionRouteSelect = By.cssSelector(".grid--item .field:nth-child(3) select");
+    private final By prescriptionFrequencyInput = By.cssSelector(".grid--item .field:nth-child(4) input");
+    private final By prescriptionDaysInput = By.cssSelector(".grid--item .field:nth-child(5) input");
+    private final By submitPrescriptionButton = By.xpath("//button[normalize-space()='Emitir prescrição']");
+    private final By prescriptionMedicationNames = By.cssSelector(".rx-item strong");
 
 
     public AppointmentDetailsPageObject(WebDriver driver){
@@ -545,6 +552,42 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new WebDriverWait(driver,Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(noPrescriptionsMessage))
                 .getText();
+    }
+
+    public void fillPrescriptionItem(String medication, String dosage, String route, String frequency, String days){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionMedicationInput))
+                .sendKeys(medication);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionDosageInput))
+                .sendKeys(dosage);
+
+        new Select(driver.findElement(prescriptionRouteSelect))
+                .selectByVisibleText(route);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionFrequencyInput))
+                .sendKeys(frequency);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(prescriptionDaysInput))
+                .sendKeys(days);
+
+    }
+
+    public void submitPrescription(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(submitPrescriptionButton))
+                .click();
+    }
+
+    public List<String> prescriptionMedicationNames(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionMedicationNames));
+
+        return driver.findElements(prescriptionMedicationNames)
+                .stream()
+                .map(WebElement::getText)
+                .toList();
     }
 }
 
