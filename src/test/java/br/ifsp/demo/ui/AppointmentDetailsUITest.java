@@ -618,4 +618,20 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("Selecione o horário.");
 
     }
+
+    @Test
+    @DisplayName("shouldRejectExamRequestsWithoutDate")
+    void shouldRejectExamRequestsWithoutDate() {
+        appointmentDetailsPage.openExamsTab();
+
+
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        appointmentDetailsPage.enterExamNameAt(0, faker.lorem().word());
+        appointmentDetailsPage.selectExamTimeAt(0, time);
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.examDateErrorMessage())
+                .isEqualTo("Selecione a data.");
+
+    }
 }

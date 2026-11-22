@@ -482,6 +482,16 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .until(ExpectedConditions.visibilityOfElementLocated(examDateError))
                 .getText();
     }
+
+    public void selectExamTimeAt(int index, String time){
+        List<WebElement> rows = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows));
+
+        rows.get(index)
+                .findElement(examTimeSelect)
+                .sendKeys(time);
+    }
+
 }
 
 
