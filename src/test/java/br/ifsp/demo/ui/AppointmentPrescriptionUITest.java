@@ -181,4 +181,34 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .containsExactly(firstMedication);
 
     }
+
+    @Test
+    @DisplayName("shouldEditPrescriptionItemAtAnyPosition")
+    void testName() {
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String secondMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.addAnotherPrescriptionItem();
+        appointmentDetailsPage.fillPrescriptionItem(1, secondMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        String updateMedication = faker.medical().medicineName();
+        String updateDosage = "11";
+        String updateFrequency = "4 vezes ao dia";
+        String updateDays = "31";
+
+        appointmentDetailsPage.editPrescriptionItemAt(1, updateMedication, updateDosage, "Subcutânea", updateFrequency, updateDays);
+
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(firstMedication, updateMedication);
+
+        assertThat(appointmentDetailsPage.prescriptionItemTextAt(1))
+                .contains(updateMedication, updateDosage, "Subcutânea", updateFrequency, updateDays);
+    }
 }

@@ -94,6 +94,11 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionDaysError =  By.cssSelector(".grid--item .field:nth-child(5) .field__error");
     private final By prescriptionItemRows = By.cssSelector("form fieldset.item-row");
     private final By addPrescriptionItemButton = By.cssSelector("form .row--between button.btn--secondary");
+    private final By prescriptionItems = By.cssSelector(".rx-list .rx-item");
+    private final By editItemButton = By.cssSelector("button.btn--ghost");
+    private final By editingItem = By.cssSelector(".rx-item--editing");
+    private final By editedMedicationInput = By.cssSelector(".grid--item .field:nth-child(1) input");
+    private final By saveItemButton =  By.xpath(".//button[normalize-space()='Salvar item']");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -649,6 +654,52 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         wait.until(ExpectedConditions.numberOfElementsToBe(prescriptionItemRows,remainingRows));
     }
 
+    public void editPrescriptionItemAt(
+            int index,
+            String medication,
+            String dosage,
+            String route,
+            String frequency,
+            String days
+    ){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        List<WebElement> items = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItems));
+
+        items.get(index).findElement(editItemButton).click();
+
+        WebElement itemBeingEdited = wait.until(ExpectedConditions.visibilityOfElementLocated(editingItem));
+
+        WebElement medicationField = itemBeingEdited.findElement(prescriptionMedicationInput);
+        medicationField.clear();
+        medicationField.sendKeys(medication);
+
+        WebElement dosageField = itemBeingEdited.findElement(prescriptionDosageInput);
+        dosageField.clear();
+        dosageField.sendKeys(dosage);
+
+        new Select(itemBeingEdited.findElement(prescriptionRouteSelect))
+                .selectByVisibleText(route);
+
+        WebElement frequencyField = itemBeingEdited.findElement(prescriptionFrequencyInput);
+        frequencyField.clear();
+        frequencyField.sendKeys(frequency);
+
+        WebElement daysField = itemBeingEdited.findElement(prescriptionDaysInput);
+        daysField.clear();
+        daysField.sendKeys(days);
+
+        wait.until(ExpectedConditions.elementToBeClickable(saveItemButton)).click();
+
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(editingItem));
+    }
+
+    public String prescriptionItemTextAt(int index){
+        List<WebElement> items = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItems));
+
+        return items.get(index).getText();
+    }
 }
 
 
