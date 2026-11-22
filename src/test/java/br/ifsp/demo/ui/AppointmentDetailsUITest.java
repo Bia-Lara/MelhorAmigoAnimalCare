@@ -654,4 +654,15 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .containsExactly(firstExam, secondExam);
 
     }
+
+    @Test
+    @DisplayName("shouldNotAllowPastExamDate")
+    void shouldNotAllowPastExamDate() {
+        appointmentDetailsPage.openExamsTab();
+
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        assertThat(appointmentDetailsPage.isExamDateSelectable(0, yesterday))
+                .isFalse();
+    }
 }

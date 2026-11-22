@@ -492,6 +492,27 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .sendKeys(time);
     }
 
+    public boolean isExamDateSelectable(int index, LocalDate date){
+        List<WebElement> rows = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows));
+
+        rows.get(index).findElement(examDateButton).click();
+
+        String dateLabel = date.format(
+                DateTimeFormatter.ofPattern(
+                        "EEEe, d 'de' MMMM 'de' yyyy",
+                        Locale.forLanguageTag("pt-BR")
+                )
+        );
+
+        By dateButton = By.xpath(
+                "//div[@role='dialog']//button[@aria-label='\" + dateLabel + \"']"
+        );
+
+        return driver.findElements(dateButton).stream()
+                .anyMatch(WebElement::isEnabled);
+    }
+
 }
 
 
