@@ -69,6 +69,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By examResultError = By.cssSelector(".exam-item .form--compact .field__error");
     private final By registeredExamResult = By.cssSelector(".exam-item__result");
     private final By examNameError =  By.cssSelector(".field input[placeholder='ex.: Hemograma completo'] + .field__error");
+    private final By examDateError = By.cssSelector(".field .dtp + .field__error");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -461,6 +462,21 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public String examNameErrorMessage(){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(examNameError))
+                .getText();
+    }
+
+    public void enterExamNameAt(int index, String name){
+        List<WebElement> rows = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows));
+
+        rows.get(index)
+                .findElement(examNameInput)
+                .sendKeys(name);
+    }
+
+    public String examDateErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(examDateError))
                 .getText();
     }
 }
