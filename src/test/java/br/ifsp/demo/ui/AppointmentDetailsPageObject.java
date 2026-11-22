@@ -68,6 +68,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By submitExamResultButton = By.cssSelector(".exam-item .form--compact button[type='submit']");
     private final By examResultError = By.cssSelector(".exam-item .form--compact .field__error");
     private final By registeredExamResult = By.cssSelector(".exam-item__result");
+    private final By examNameError =  By.cssSelector(".field input[placeholder='ex.: Hemograma completo'] + .field__error");
     private final By clinicalInputs = By.cssSelector(
             "input[name='temperaturaC'], input[name='frequenciaCardiaca'], "
                     + "input[name='pesoKg'], input[name='queixaPrincipal'], "
@@ -407,10 +408,9 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     }
 
     public  void submitExamRequest(){
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10));
-
-        wait.until(ExpectedConditions.elementToBeClickable(requestExamsButton)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(requestedExamItems));
+        new WebDriverWait(driver,Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(requestExamsButton))
+                        .click();
     }
 
     public List<String> requestedExamNames(){
@@ -456,6 +456,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .click();
 
         wait.until(ExpectedConditions.numberOfElementsToBe(examRequestRows,remainingRows));
+    }
+
+    public String examNameErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(examNameError))
+                .getText();
     }
 }
 

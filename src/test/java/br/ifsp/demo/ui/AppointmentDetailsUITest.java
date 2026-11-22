@@ -576,4 +576,19 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .containsExactly(firstExam);
 
     }
+
+    @Test
+    @DisplayName("shouldRejectExamRequestWithoutName")
+    void shouldRejectExamRequestWithoutName() {
+        appointmentDetailsPage.openExamsTab();
+
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        appointmentDetailsPage.fillExamRequestAt(0, "", date, time);
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.examNameErrorMessage())
+                .isEqualTo("Informe o nome do exame.");
+
+    }
 }
