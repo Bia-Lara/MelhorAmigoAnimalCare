@@ -745,4 +745,17 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("Nenhum exame solicitado.");
 
     }
+
+    @Test
+    @DisplayName("shouldShowRequiredErrorsForEmptyExamRequest")
+    void shouldShowRequiredErrorsForEmptyExamRequest() {
+        appointmentDetailsPage.openExamsTab();
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.examNameErrorMessage())
+                .isEqualTo("Informe o nome do exame.");
+        assertThat(appointmentDetailsPage.examDateErrorMessage())
+                .isEqualTo("Informe data e hora.");
+
+    }
 }
