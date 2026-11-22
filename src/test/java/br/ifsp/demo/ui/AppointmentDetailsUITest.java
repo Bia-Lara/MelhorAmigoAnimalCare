@@ -550,4 +550,30 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo(result);
 
     }
+
+    @Test
+    @DisplayName("shouldRemoveExamBeforeRequesting")
+    void shouldRemoveExamBeforeRequesting() {
+        appointmentDetailsPage.openExamsTab();
+
+        String firstExam = faker.lorem().word();
+        String removedExam = faker.lorem().word();
+        LocalDate date = LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String result = faker.lorem().sentence();
+
+        appointmentDetailsPage.fillExamRequestAt(0, firstExam, date, time);
+        appointmentDetailsPage.addAnotherExam();
+        appointmentDetailsPage.fillExamRequestAt(1, removedExam, date, time);
+
+        appointmentDetailsPage.removeExamRequestAt(1);
+
+        assertThat(appointmentDetailsPage.examRequestRowCount()).isEqualTo(1);
+
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.requestedExamNames())
+                .containsExactly(firstExam);
+
+    }
 }

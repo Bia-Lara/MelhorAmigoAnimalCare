@@ -444,6 +444,19 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     }
 
 
+    public void removeExamRequestAt(int index){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        List<WebElement> rows = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(examRequestRows));
+
+        int remainingRows = rows.size() -1;
+
+        rows.get(index)
+                .findElement(By.xpath(".//button[normalize-space()='Remover']"))
+                .click();
+
+        wait.until(ExpectedConditions.numberOfElementsToBe(examRequestRows,remainingRows));
+    }
 }
 
 
