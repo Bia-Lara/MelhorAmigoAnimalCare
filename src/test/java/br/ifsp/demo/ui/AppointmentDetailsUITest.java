@@ -625,7 +625,7 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
         appointmentDetailsPage.openExamsTab();
 
 
-        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String time = LocalTime.of(18,0).format(DateTimeFormatter.ofPattern("HH:mm"));
         appointmentDetailsPage.enterExamNameAt(0, faker.lorem().word());
         appointmentDetailsPage.selectExamTimeAt(0, time);
         appointmentDetailsPage.submitExamRequest();
