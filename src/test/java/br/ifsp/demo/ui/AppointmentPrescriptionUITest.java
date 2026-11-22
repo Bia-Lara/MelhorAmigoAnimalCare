@@ -211,4 +211,26 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.prescriptionItemTextAt(1))
                 .contains(updateMedication, updateDosage, "Subcutânea", updateFrequency, updateDays);
     }
+
+    @Test
+    @DisplayName("shouldRemoveItemFromIssuedPrescription")
+    void shouldRemoveItemFromIssuedPrescription() {
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String secondMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.addAnotherPrescriptionItem();
+        appointmentDetailsPage.fillPrescriptionItem(1, secondMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        appointmentDetailsPage.removeIssuedPrescriptionItemAt(1);
+
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(firstMedication);
+    }
 }

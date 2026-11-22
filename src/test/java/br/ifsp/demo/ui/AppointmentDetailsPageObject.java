@@ -700,6 +700,23 @@ public class AppointmentDetailsPageObject extends BasePageObject{
 
         return items.get(index).getText();
     }
+
+    public void removeIssuedPrescriptionItemAt(int index){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        List<WebElement> items = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItems));
+
+        int remainingItems = items.size() -1;
+
+        items.get(index)
+                .findElement(By.xpath(".//button[normalize-space()='Remover']"))
+                .click();
+
+        wait.until(ExpectedConditions.numberOfElementsToBe(
+                prescriptionItems,
+                remainingItems
+        ));
+    }
 }
 
 
