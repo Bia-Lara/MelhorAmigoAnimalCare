@@ -35,4 +35,21 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .containsExactly(medication);
 
     }
+
+    @Test
+    @DisplayName("shouldRejectPrescriptionWithoutMedication")
+    void shouldRejectPrescriptionWithoutMedication() {
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem("", dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        assertThat(appointmentDetailsPage.prescriptionMedicationErrorMessage())
+                .isEqualTo("Obrigatório.");
+    }
 }

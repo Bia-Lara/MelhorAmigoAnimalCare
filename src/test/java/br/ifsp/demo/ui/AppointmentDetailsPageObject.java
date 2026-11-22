@@ -85,7 +85,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By prescriptionDaysInput = By.cssSelector(".grid--item .field:nth-child(5) input");
     private final By submitPrescriptionButton = By.xpath("//button[normalize-space()='Emitir prescrição']");
     private final By prescriptionMedicationNames = By.cssSelector(".rx-item strong");
-
+    private final By prescriptionMedicationError = By.cssSelector(".grid--item .field:nth-child(1) .field__error");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -588,6 +588,13 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 .stream()
                 .map(WebElement::getText)
                 .toList();
+    }
+
+    public String prescriptionMedicationErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(prescriptionMedicationError))
+                .getText();
+
     }
 }
 
