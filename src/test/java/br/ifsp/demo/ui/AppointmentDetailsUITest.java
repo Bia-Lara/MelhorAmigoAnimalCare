@@ -634,4 +634,24 @@ public class AppointmentDetailsUITest extends BaseSeleniumTest{
                 .isEqualTo("Selecione a data.");
 
     }
+
+    @Test
+    @DisplayName("shouldSubmitMultipleExamRequests")
+    void shouldSubmitMultipleExamRequests() {
+        appointmentDetailsPage.openExamsTab();
+
+        String firstExam = faker.lorem().word();
+        String secondExam = faker.lorem().word();
+        LocalDate date= LocalDate.now().plusDays(1);
+        String time = LocalTime.of(9,0).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        appointmentDetailsPage.fillExamRequestAt(0,firstExam,date,time);
+        appointmentDetailsPage.addAnotherExam();
+        appointmentDetailsPage.fillExamRequestAt(1, secondExam, date, time);
+        appointmentDetailsPage.submitExamRequest();
+
+        assertThat(appointmentDetailsPage.requestedExamNames())
+                .containsExactly(firstExam, secondExam);
+
+    }
 }
