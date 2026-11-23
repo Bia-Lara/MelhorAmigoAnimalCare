@@ -3,8 +3,11 @@ package br.ifsp.demo.controller.prescricao;
 import br.ifsp.demo.controller.BaseApiIntegrationTest;
 import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
+import br.ifsp.demo.model.prescricao.ItemPrescricao;
+import br.ifsp.demo.model.prescricao.Prescricao;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
+import br.ifsp.demo.shared.EntityBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
@@ -90,6 +93,33 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(400)
                     .contentType(ContentType.JSON)
                     .body("message", containsString("pelo menos um item"));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /{atendimentoId}/prescricoes")
+    class Listar {
+
+        @Test
+        @DisplayName("Should return 200 with the prescriptions and their items")
+        void shouldReturn200WithPrescriptionsAndItems() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            ItemPrescricao item = EntityBuilder.createRandomItemPrescricao();
+            Prescricao prescricao = atendimento.emitirPrescricao(List.of(item));
+            atendimentoRepository.salvar(atendimento);
+            UUID id = atendimento.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().get("/api/v1/atendimentos/" + id + "/prescricoes")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("$", hasSize(1))
+                    .body("[0].id", equalTo(prescricao.getId().getValue().toString()))
+                    .body("[0].status", equalTo("ABERTA"))
+                    .body("[0].itens", hasSize(1))
+                    .body("[0].itens[0].medicamento", equalTo(item.getMedicamento()));
         }
     }
 }
