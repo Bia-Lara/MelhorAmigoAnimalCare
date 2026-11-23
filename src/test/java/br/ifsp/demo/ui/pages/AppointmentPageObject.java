@@ -1,5 +1,6 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.pages;
 
+import br.ifsp.demo.ui.base.BasePageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -11,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class AppointmentPageObject extends BasePageObject{
+public class AppointmentPageObject extends BasePageObject {
     private final By heading = By.cssSelector(".page-head h1");
     private final By openingTypeButtons = By.cssSelector(".segmented button[role='radio']");
     private final By animalSelect = By.cssSelector(".card select");

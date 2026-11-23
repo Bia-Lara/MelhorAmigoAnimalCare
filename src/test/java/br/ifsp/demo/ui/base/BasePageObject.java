@@ -1,4 +1,4 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.base;
 
 import org.openqa.selenium.WebDriver;
 

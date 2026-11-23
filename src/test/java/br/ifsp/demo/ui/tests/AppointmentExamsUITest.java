@@ -1,5 +1,6 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.tests;
 
+import br.ifsp.demo.ui.base.BaseAppointmentDetailsUITest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UI Test")
-public class AppointmentExamsUITest extends  BaseAppointmentDetailsUITest{
+public class AppointmentExamsUITest extends BaseAppointmentDetailsUITest {
     @Test
     @DisplayName("shouldHideExamRequestFormAfterConclusion")
     void shouldHideExamRequestFormAfterConclusion() {

@@ -1,4 +1,4 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.base;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

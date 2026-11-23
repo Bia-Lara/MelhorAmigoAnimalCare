@@ -1,9 +1,13 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.base;
 
+import br.ifsp.demo.ui.pages.AppointmentDetailsPageObject;
+import br.ifsp.demo.ui.pages.AppointmentPageObject;
+import br.ifsp.demo.ui.pages.LoginPageObject;
+import br.ifsp.demo.ui.pages.RegisterPageObject;
 import com.github.javafaker.Faker;
 
-public class BaseAppointmentDetailsUITest extends BaseSeleniumTest{
-    protected  AppointmentDetailsPageObject  appointmentDetailsPage;
+public class BaseAppointmentDetailsUITest extends BaseSeleniumTest {
+    protected AppointmentDetailsPageObject appointmentDetailsPage;
     protected final Faker faker = new Faker();
 
     @Override

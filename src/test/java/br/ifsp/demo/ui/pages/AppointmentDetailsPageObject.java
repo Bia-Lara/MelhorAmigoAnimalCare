@@ -1,9 +1,6 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.pages;
 
-import com.github.javafaker.App;
-import com.github.javafaker.Weather;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import br.ifsp.demo.ui.base.BasePageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-public class AppointmentDetailsPageObject extends BasePageObject{
+public class AppointmentDetailsPageObject extends BasePageObject {
     private final By appointmentId = By.cssSelector(".header-card h1.h-id");
     private final By appointmentOrigin = By.xpath("//dt[normalize-space()='Origem']/following-sibling::dd");
     private final By backToAppointmentsLink = By.cssSelector("a.back-link");

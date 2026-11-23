@@ -1,17 +1,16 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.tests;
 
-import br.ifsp.demo.model.clinico.Anamnese;
+import br.ifsp.demo.ui.base.BaseAppointmentDetailsUITest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UI Test")
-public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
+public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest {
 
     @Test
     @DisplayName("shouldShowEmptyStateWhenThereAreNoPrescriptions")

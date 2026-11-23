@@ -1,5 +1,10 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.tests;
 
+import br.ifsp.demo.ui.base.BaseSeleniumTest;
+import br.ifsp.demo.ui.pages.AppointmentDetailsPageObject;
+import br.ifsp.demo.ui.pages.AppointmentPageObject;
+import br.ifsp.demo.ui.pages.LoginPageObject;
+import br.ifsp.demo.ui.pages.RegisterPageObject;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -12,7 +17,7 @@ import  static org.assertj.core.api.Assertions.*;
 @Tag("UITest")
 public class AppointmentsUITest extends BaseSeleniumTest {
 
-    private  AppointmentPageObject appointmentPage;
+    private AppointmentPageObject appointmentPage;
 
     @Override
     protected  void setInitialPage(){

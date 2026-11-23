@@ -1,5 +1,6 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.pages;
 
+import br.ifsp.demo.ui.base.BasePageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -7,7 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class RegisterPageObject extends BasePageObject{
+public class RegisterPageObject extends BasePageObject {
     private final By nameInput= By.name("name");
     private final By lastNameInput = By.name("lastname");
     private final By emailInput = By.name("email");

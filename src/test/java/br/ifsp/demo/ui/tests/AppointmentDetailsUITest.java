@@ -1,19 +1,15 @@
-package br.ifsp.demo.ui;
+package br.ifsp.demo.ui.tests;
 
+import br.ifsp.demo.ui.base.BaseAppointmentDetailsUITest;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
 import static org.assertj.core.api.Assertions.*;
 
 @Tag("UITest")
-public class AppointmentDetailsUITest extends BaseAppointmentDetailsUITest{
+public class AppointmentDetailsUITest extends BaseAppointmentDetailsUITest {
 
     @Test
     @DisplayName("shouldRegisterValidVitalSigns")
