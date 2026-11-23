@@ -538,6 +538,15 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.isPrescriptionFormDisplayed())
                 .isFalse();
 
+    }
 
+    @Test
+    @DisplayName("shouldModifyWindowOnPrescriptionPage")
+    void shouldModifyWindowOnPrescriptionPage() {
+        appointmentDetailsPage.openPrescriptionTab();
+
+        driver.manage().window().maximize();
+        driver.manage().window().fullscreen();
+        driver.manage().window().minimize();
     }
 }

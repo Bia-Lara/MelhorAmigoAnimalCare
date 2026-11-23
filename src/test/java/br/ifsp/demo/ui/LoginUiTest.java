@@ -90,4 +90,13 @@ public class LoginUiTest extends BaseSeleniumTest{
 
     }
 
+    @Test
+    @DisplayName("shouldModifyWindowOnLoginPage")
+    void shouldModifyWindowOnLoginPage() {
+
+        driver.manage().window().maximize();
+        driver.manage().window().fullscreen();
+        driver.manage().window().minimize();
+    }
+
 }

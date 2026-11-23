@@ -241,5 +241,12 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         assertThat(appointmentsPage.recentAppointmentShortIds()).containsExactly(secondId.substring(0,8) + "…", firstId.substring(0,8) + "…");
 
     }
-    
+
+    @Test
+    @DisplayName("shouldModifyWindowOnAppointmentsPage")
+    void shouldModifyWindowOnAppointmentsPage() {
+        driver.manage().window().maximize();
+        driver.manage().window().fullscreen();
+        driver.manage().window().minimize();
+    }
 }

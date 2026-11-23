@@ -333,4 +333,14 @@ public class AppointmentExamsUITest extends  BaseAppointmentDetailsUITest{
 
     }
 
+    @Test
+    @DisplayName("shouldModifyWindowOnExamPage")
+    void shouldModifyWindowOnExamPage() {
+        appointmentDetailsPage.openExamsTab();
+
+        driver.manage().window().maximize();
+        driver.manage().window().fullscreen();
+        driver.manage().window().minimize();
+    }
+
 }
