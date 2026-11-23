@@ -484,4 +484,43 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .isFalse();
 
     }
+
+    @Test
+    @DisplayName("shouldHidePrescriptionFormAfterConcludingAppointment")
+    void shouldHidePrescriptionFormAfterConcludingAppointment() {
+
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1, 36, 39)),
+                String.valueOf(faker.number().numberBetween(60, 120)),
+                String.valueOf(faker.number().randomDouble(2, 2, 40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage())
+                .isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+
+        appointmentDetailsPage.addDiagnosis(code, description, "Presuntivo");
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description, "Presuntivo"))
+                .isTrue();
+
+        appointmentDetailsPage.concludeAppointment();
+
+        assertThat(appointmentDetailsPage.isAppointmentConcluded())
+                .isTrue();
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        assertThat(appointmentDetailsPage.isPrescriptionFormDisplayed())
+                .isFalse();
+    }
 }

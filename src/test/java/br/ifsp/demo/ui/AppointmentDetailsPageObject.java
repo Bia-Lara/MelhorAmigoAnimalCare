@@ -817,6 +817,12 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                         expectedCount
                 ));
     }
+
+    public boolean isPrescriptionFormDisplayed() {
+        return driver.findElements(submitPrescriptionButton)
+                .stream()
+                .anyMatch(WebElement::isDisplayed);
+    }
 }
 
 
