@@ -236,5 +236,20 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(itens).hasSize(1);
             assertThat(itens.get(0).getId()).isEqualTo(toKeep.getId());
         }
+
+        @Test
+        @DisplayName("Should return 404 when prescription does not exist")
+        void shouldReturn404WhenPrescriptionDoesNotExist() {
+            UUID atendimentoId = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().delete("/api/v1/atendimentos/" + atendimentoId
+                            + "/prescricoes/" + UUID.randomUUID() + "/itens/" + UUID.randomUUID())
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(404)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
