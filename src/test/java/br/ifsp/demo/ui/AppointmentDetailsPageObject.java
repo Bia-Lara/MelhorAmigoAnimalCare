@@ -53,6 +53,10 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By concludeAppointmentButton = By.xpath("//section[contains(@class, 'header-card')]//button[normalize-space()='Concluir atendimento']");
     private final By confirmConclusionButton = By.cssSelector("dialog[open] button[type='submit']");
     private final By completedStatus = By.cssSelector(".header-card .badge--concluido");
+    private final By reopenAppointmentButton = By.xpath("//section[contains(@class, 'header-card')]//button[normalize-space()='Reabrir (até 24h)']");
+    private final By reopenDialogTitle = By.xpath("//dialog[@open]//h3[normalize-space()='Reabrir atendimento?']");
+    private final By confirmReopenButton = By.xpath("//dialog[@open][.//h3[normalize-space()='Reabrir atendimento?']]//button[@type='submit']");
+    private final By inProgressStatus = By.cssSelector(".header-card .badge--em_andamento");
 
     private final By examsTab = By.id("tab-exames");
     private final By examRequestHeading = By.xpath("//h2[normalize-space()='Solicitar exames']");
@@ -362,6 +366,24 @@ public class AppointmentDetailsPageObject extends BasePageObject{
 
     public boolean isAppointmentConcluded(){
         return !driver.findElements(completedStatus).isEmpty();
+    }
+
+    public void reopenAppointment(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(reopenAppointmentButton))
+                .sendKeys(Keys.RETURN);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(reopenDialogTitle));
+
+        wait.until(ExpectedConditions.elementToBeClickable(confirmReopenButton))
+                .click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(inProgressStatus));
+    }
+
+    public boolean isAppointmentInProgress(){
+        return !driver.findElements(inProgressStatus).isEmpty();
     }
 
     //---------Exames--------
