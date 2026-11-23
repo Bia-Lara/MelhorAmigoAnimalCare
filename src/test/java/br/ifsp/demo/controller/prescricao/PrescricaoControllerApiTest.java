@@ -204,4 +204,37 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .body("message", not(emptyOrNullString()));
         }
     }
+
+    @Nested
+    @DisplayName("DELETE /{atendimentoId}/prescricoes/{prescricaoId}/itens/{itemId}")
+    class RemoverItem {
+
+        @Test
+        @DisplayName("Should return 204 and remove the item from the prescription")
+        void shouldReturn204AndRemoveItem() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            ItemPrescricao toRemove = EntityBuilder.createRandomItemPrescricao();
+            ItemPrescricao toKeep = EntityBuilder.createRandomItemPrescricao();
+            Prescricao prescricao = atendimento.emitirPrescricao(List.of(toRemove, toKeep));
+            atendimentoRepository.salvar(atendimento);
+
+            UUID atendimentoId = atendimento.getId().getValue();
+            UUID prescricaoId = prescricao.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().delete("/api/v1/atendimentos/" + atendimentoId
+                            + "/prescricoes/" + prescricaoId + "/itens/" + toRemove.getId().getValue())
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(204)
+                    .body(emptyOrNullString());
+
+            List<ItemPrescricao> itens = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().get(0).getItens();
+
+            assertThat(itens).hasSize(1);
+            assertThat(itens.get(0).getId()).isEqualTo(toKeep.getId());
+        }
+    }
 }
