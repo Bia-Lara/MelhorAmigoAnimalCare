@@ -121,5 +121,19 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .body("[0].itens", hasSize(1))
                     .body("[0].itens[0].medicamento", equalTo(item.getMedicamento()));
         }
+
+        @Test
+        @DisplayName("Should return 200 with an empty list when atendimento has no prescriptions")
+        void shouldReturn200WithEmptyList() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().get("/api/v1/atendimentos/" + id + "/prescricoes")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("$", empty());
+        }
     }
 }
