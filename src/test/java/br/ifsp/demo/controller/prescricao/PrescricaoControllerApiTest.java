@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @Tag("ApiTest")
@@ -134,6 +135,50 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("$", empty());
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /{atendimentoId}/prescricoes/{prescricaoId}/itens/{itemId}")
+    class EditarItem {
+
+        @Test
+        @DisplayName("Should return 204 and update the item")
+        void shouldReturn204AndUpdateItem() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            ItemPrescricao original = EntityBuilder.createRandomItemPrescricao();
+            Prescricao prescricao = atendimento.emitirPrescricao(List.of(original));
+            atendimentoRepository.salvar(atendimento);
+
+            UUID atendimentoId = atendimento.getId().getValue();
+            UUID prescricaoId = prescricao.getId().getValue();
+            UUID itemId = original.getId().getValue();
+
+            Map<String, Object> novoItem = Map.of(
+                    "medicamento", "Dipirona",
+                    "dosagem", 10,
+                    "via", "Oral",
+                    "frequencia", "8/8h",
+                    "diasDuracao", 5);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(novoItem)
+                    .when().put("/api/v1/atendimentos/" + atendimentoId
+                            + "/prescricoes/" + prescricaoId + "/itens/" + itemId)
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(204)
+                    .body(emptyOrNullString());
+
+            ItemPrescricao editado = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().get(0).getItens().get(0);
+
+            assertThat(editado.getId().getValue()).isEqualTo(itemId);
+            assertThat(editado.getMedicamento()).isEqualTo("Dipirona");
+            assertThat(editado.getDosagem()).isEqualTo(10);
+            assertThat(editado.getFrequencia()).isEqualTo("8/8h");
+            assertThat(editado.getDiasDuracao()).isEqualTo(5);
         }
     }
 }
