@@ -523,4 +523,21 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.isPrescriptionFormDisplayed())
                 .isFalse();
     }
+
+    @Test
+    @DisplayName("shouldHidePrescriptionFormAfterCancellationAppointment")
+    void shouldHidePrescriptionFormAfterCancellationAppointment() {
+
+        appointmentDetailsPage.cancelAppointment(faker.lorem().sentence());
+
+        assertThat(appointmentDetailsPage.isAppointmentConcluded())
+                .isFalse();
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        assertThat(appointmentDetailsPage.isPrescriptionFormDisplayed())
+                .isFalse();
+
+
+    }
 }
