@@ -180,5 +180,28 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(editado.getFrequencia()).isEqualTo("8/8h");
             assertThat(editado.getDiasDuracao()).isEqualTo(5);
         }
+
+        @Test
+        @DisplayName("Should return 404 when prescription does not exist")
+        void shouldReturn404WhenPrescriptionDoesNotExist() {
+            UUID atendimentoId = givenAtendimentoEmAndamento().getId().getValue();
+
+            Map<String, Object> novoItem = Map.of(
+                    "medicamento", "Dipirona",
+                    "dosagem", 10,
+                    "via", "Oral",
+                    "frequencia", "8/8h",
+                    "diasDuracao", 5);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(novoItem)
+                    .when().put("/api/v1/atendimentos/" + atendimentoId
+                            + "/prescricoes/" + UUID.randomUUID() + "/itens/" + UUID.randomUUID())
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(404)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
