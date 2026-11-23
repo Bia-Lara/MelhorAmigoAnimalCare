@@ -279,8 +279,8 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
     }
 
     @Test
-    @DisplayName("shouldPreventFinalizingPrescriptionWithoutItems")
-    void shouldPreventFinalizingPrescriptionWithoutItems() {
+    @DisplayName("shouldKeepAppointmentOpenAfterRemovingLastPrescriptionItem")
+    void shouldKeepAppointmentOpenAfterRemovingLastPrescriptionItem() {
         appointmentDetailsPage.registerVitalSigns(
                 String.valueOf(faker.number().randomDouble(1, 36, 39)),
                 String.valueOf(faker.number().numberBetween(60, 120)),
@@ -329,6 +329,64 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
                 .isFalse();
 
+    }
+
+    @Test
+    @DisplayName("shouldAllowConcludingAppointmentAfterFinalizingPrescription")
+    void shouldAllowConcludingAppointmentAfterFinalizingPrescription() {
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1, 36, 39)),
+                String.valueOf(faker.number().numberBetween(60, 120)),
+                String.valueOf(faker.number().randomDouble(2, 2, 40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage())
+                .isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+
+        appointmentDetailsPage.addDiagnosis(code, description, "Presuntivo");
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description, "Presuntivo"))
+                .isTrue();
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String medication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, medication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(medication);
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isFalse();
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isFalse();
+
+        appointmentDetailsPage.finalizeIssuedPrescription();
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isTrue();
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isTrue();
+
+        appointmentDetailsPage.concludeAppointment();
+
+        assertThat(appointmentDetailsPage.isAppointmentConcluded())
+                .isTrue();
 
     }
 }
