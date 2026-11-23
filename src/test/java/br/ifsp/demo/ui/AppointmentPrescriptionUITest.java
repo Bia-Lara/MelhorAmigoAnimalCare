@@ -1,5 +1,6 @@
 package br.ifsp.demo.ui;
 
+import br.ifsp.demo.model.clinico.Anamnese;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -275,5 +276,59 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .isTrue();
         assertThat(appointmentDetailsPage.hasPrescriptionItemActionsAt(0))
                 .isFalse();
+    }
+
+    @Test
+    @DisplayName("shouldPreventFinalizingPrescriptionWithoutItems")
+    void shouldPreventFinalizingPrescriptionWithoutItems() {
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1, 36, 39)),
+                String.valueOf(faker.number().numberBetween(60, 120)),
+                String.valueOf(faker.number().randomDouble(2, 2, 40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage())
+                .isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+
+        appointmentDetailsPage.addDiagnosis(code, description, "Presuntivo");
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description, "Presuntivo"))
+                .isTrue();
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstMedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+
+        appointmentDetailsPage.removeIssuedPrescriptionItemAt(0);
+
+        assertThat(appointmentDetailsPage.prescriptionItemsEmptyMessage())
+                .isEqualTo("Sem itens.");
+
+        assertThat(appointmentDetailsPage.isPrescriptionFinalizeButtonEnabled())
+                .isFalse();
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isFalse();
+
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isFalse();
+
+
     }
 }

@@ -99,7 +99,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By editItemButton = By.cssSelector("button.btn--ghost");
     private final By editingItem = By.cssSelector(".rx-item--editing");
     private final By saveItemButton =  By.xpath(".//button[normalize-space()='Salvar item']");
-    private final By finalizePrescriptionButton = By.xpath("//section[contains(@class, 'card')][.//ul[contains(@class, 'rx-list')]]" + "//button[normalize-space()='Finalizar']");
+    private final By finalizePrescriptionButton = By.xpath("//section[contains(@class, 'card')][.//span[contains(@class, 'badge--aberta')]]" + "//button[normalize-space()='Finalizar']");
     private final By confirmFinalizePrescriptionButton = By.xpath("//dialog[@open]//button[normalize-space()='Finalizar']");
     private final By prescriptionFinalizedStatus = By.cssSelector(".badge--finalizada");
     private final By prescriptionItemActions = By.xpath(".//button[normalize-space()='Editar' or normalize-space()='Remover']");
@@ -107,6 +107,8 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     private final By cancelPrescriptionButton = By.xpath("//section[contains(@class, 'card')][.//ul[contains(@class, 'rx-list')]]" + "//button[normalize-space()='Cancelar prescrição']");
     private final By prescriptionCancelledStatus = By.cssSelector(".badge--cancelada");
     private final By confirmCancelAlertPrescription = By.xpath("//dialog[@open]//h3[normalize-space()='Cancelar prescrição?']");
+    private final By prescriptionItemsEmptyMessage = By.xpath("//section[contains(@class, 'card')][.//span[contains(@class, 'badge--aberta')]]" + "//p[contains(@class, 'empty')]");
+    private final By noOpenPrescriptionRequirement = By.xpath("//ul[@aria-label='Requisitos para concluir']/li" + "[contains(., 'Nenhuma prescrição aberta')]");
 
     public AppointmentDetailsPageObject(WebDriver driver){
         super(driver);
@@ -565,7 +567,7 @@ public class AppointmentDetailsPageObject extends BasePageObject{
     public void openPrescriptionTab(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        wait.until(ExpectedConditions.elementToBeClickable(prescriptionsTab)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(prescriptionsTab)).sendKeys(Keys.RETURN);
         wait.until(ExpectedConditions.attributeToBe(prescriptionsTab, "aria-selected", "true"));
     }
 
@@ -766,6 +768,29 @@ public class AppointmentDetailsPageObject extends BasePageObject{
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(prescriptionCancelledStatus))
                 .isDisplayed();
+    }
+
+    public String prescriptionItemsEmptyMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(prescriptionItemsEmptyMessage))
+                .getText();
+    }
+
+    public boolean isPrescriptionFinalizeButtonEnabled(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        finalizePrescriptionButton
+                ))
+                .isEnabled();
+    }
+
+    public boolean isNoOpenPrescriptionRequirementComplete(){
+        return new  WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        noOpenPrescriptionRequirement
+                ))
+                .getAttribute("class")
+                .contains("is-ok");
     }
 }
 
