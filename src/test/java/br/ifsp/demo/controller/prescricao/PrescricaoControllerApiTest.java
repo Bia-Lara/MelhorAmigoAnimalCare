@@ -76,5 +76,20 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .body("itens[0].frequencia", equalTo("8/8h"))
                     .body("itens[0].diasDuracao", equalTo(5));
         }
+
+        @Test
+        @DisplayName("Should return 400 when item list is empty")
+        void shouldReturn400WhenItemListIsEmpty() {
+            UUID id = givenAtendimentoEmAndamento().getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Map.of("itens", List.of()))
+                    .when().post("/api/v1/atendimentos/" + id + "/prescricoes")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(400)
+                    .contentType(ContentType.JSON)
+                    .body("message", containsString("pelo menos um item"));
+        }
     }
 }
