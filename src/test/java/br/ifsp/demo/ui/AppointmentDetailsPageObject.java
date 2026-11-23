@@ -579,16 +579,33 @@ public class AppointmentDetailsPageObject extends BasePageObject{
 
     public void fillPrescriptionItem(int index, String medication, String dosage, String route, String frequency, String days){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        List<WebElement> rows = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(prescriptionItemRows));
 
-        WebElement row = rows.get(index);
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(prescriptionItemRows, index));
 
-        row.findElement(prescriptionMedicationInput).sendKeys(medication);
-        row.findElement(prescriptionDosageInput).sendKeys(dosage);
-        new Select(row.findElement(prescriptionRouteSelect))
+        driver.findElements(prescriptionItemRows)
+                .get(index)
+                .findElement(prescriptionMedicationInput)
+                .sendKeys(medication);
+
+        driver.findElements(prescriptionItemRows)
+                .get(index)
+                .findElement(prescriptionDosageInput)
+                .sendKeys(dosage);
+
+        new Select(driver.findElements(prescriptionItemRows)
+                .get(index).
+                findElement(prescriptionRouteSelect))
                 .selectByVisibleText(route);
-        row.findElement(prescriptionFrequencyInput).sendKeys(frequency);
-        row.findElement(prescriptionDaysInput).sendKeys(days);
+
+        driver.findElements(prescriptionItemRows)
+                .get(index)
+                .findElement(prescriptionFrequencyInput)
+                .sendKeys(frequency);
+
+        driver.findElements(prescriptionItemRows)
+                .get(index)
+                .findElement(prescriptionDaysInput)
+                .sendKeys(days);
 
     }
 
@@ -791,6 +808,14 @@ public class AppointmentDetailsPageObject extends BasePageObject{
                 ))
                 .getAttribute("class")
                 .contains("is-ok");
+    }
+
+    public void waitForPrescriptionMedicationCount(int expectedCount) {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.numberOfElementsToBe(
+                        prescriptionMedicationNames,
+                        expectedCount
+                ));
     }
 }
 

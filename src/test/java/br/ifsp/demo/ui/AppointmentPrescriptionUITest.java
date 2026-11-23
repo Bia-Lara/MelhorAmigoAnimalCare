@@ -426,4 +426,62 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
                 .isTrue();
 
     }
+
+    @Test
+    @DisplayName("shouldKeepAppointmentOpenWhileAnotherPrescriptionIsOpen")
+    void shouldKeepAppointmentOpenWhileAnotherPrescriptionIsOpen() {
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1, 36, 39)),
+                String.valueOf(faker.number().numberBetween(60, 120)),
+                String.valueOf(faker.number().randomDouble(2, 2, 40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage())
+                .isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+
+        appointmentDetailsPage.addDiagnosis(code, description, "Presuntivo");
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description, "Presuntivo"))
+                .isTrue();
+
+        appointmentDetailsPage.openPrescriptionTab();
+
+        String firstmedication = faker.medical().medicineName();
+        String secondmedication = faker.medical().medicineName();
+        String dosage = String.valueOf(faker.number().numberBetween(1,10));
+        String frequency = faker.number().numberBetween(1,3) + " vezes ao dia";
+        String days = String.valueOf(faker.number().numberBetween(1,30));
+
+        appointmentDetailsPage.fillPrescriptionItem(0, firstmedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(firstmedication);
+
+        appointmentDetailsPage.fillPrescriptionItem(0, secondmedication, dosage, "Oral", frequency,days);
+        appointmentDetailsPage.submitPrescription();
+        appointmentDetailsPage.waitForPrescriptionMedicationCount(2);
+        assertThat(appointmentDetailsPage.prescriptionMedicationNames())
+                .containsExactly(secondmedication, firstmedication);
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isFalse();
+
+        appointmentDetailsPage.finalizeIssuedPrescription();
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isFalse();
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isFalse();
+
+    }
 }
