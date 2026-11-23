@@ -257,8 +257,32 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
     }
 
     @Test
-    @DisplayName("shouldHideItemActionsAfterCancelingPrescription")
-    void shouldHideItemActionsAfterCancelingPrescription() {
+    @DisplayName("shouldHideItemActionsAndConcludingAppointmentAfterCancelingPrescription")
+    void shouldHideItemActionsAndConcludingAppointmentAfterCancelingPrescription() {
+
+        appointmentDetailsPage.registerVitalSigns(
+                String.valueOf(faker.number().randomDouble(1, 36, 39)),
+                String.valueOf(faker.number().numberBetween(60, 120)),
+                String.valueOf(faker.number().randomDouble(2, 2, 40))
+        );
+
+        assertThat(appointmentDetailsPage.vitalsSaveMessage())
+                .isEqualTo("Sinais vitais salvos.");
+
+        appointmentDetailsPage.registerAnmnesis(
+                faker.lorem().sentence(),
+                faker.lorem().sentence()
+        );
+
+        assertThat(appointmentDetailsPage.anamneseSavedMessage())
+                .isEqualTo("Anamnese salva.");
+
+        String code = faker.number().digits(3);
+        String description = faker.lorem().sentence();
+
+        appointmentDetailsPage.addDiagnosis(code, description, "Presuntivo");
+        assertThat(appointmentDetailsPage.hasDiagnosis(code, description, "Presuntivo"))
+                .isTrue();
 
         appointmentDetailsPage.openPrescriptionTab();
 
@@ -270,12 +294,25 @@ public class AppointmentPrescriptionUITest extends BaseAppointmentDetailsUITest{
         appointmentDetailsPage.fillPrescriptionItem(0, firstMedication, dosage, "Oral", frequency,days);
         appointmentDetailsPage.submitPrescription();
 
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isFalse();
+        assertThat(appointmentDetailsPage.isConcludeAppointmentButtonEnabled())
+                .isFalse();
+
         appointmentDetailsPage.cancelIssuedPrescription();
 
         assertThat(appointmentDetailsPage.isPrescriptionCancelled())
                 .isTrue();
         assertThat(appointmentDetailsPage.hasPrescriptionItemActionsAt(0))
                 .isFalse();
+
+        assertThat(appointmentDetailsPage.isNoOpenPrescriptionRequirementComplete())
+                .isTrue();
+
+        appointmentDetailsPage.concludeAppointment();
+
+        assertThat(appointmentDetailsPage.isAppointmentConcluded())
+                .isTrue();
     }
 
     @Test
