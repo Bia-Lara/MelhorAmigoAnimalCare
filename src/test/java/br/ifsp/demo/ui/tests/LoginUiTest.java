@@ -135,4 +135,15 @@ public class LoginUiTest extends BaseSeleniumTest {
                 .as("Scroll horizontal em %s (%dx%d)", device, width, height)
                 .isFalse();
     }
+
+    @ParameterizedTest(name = "[{index}] {0} ({1}x{2})")
+    @DisplayName("shouldShowRequiredMessagesOnDifferentViewports")
+    @ArgumentsSource(ViewportsProvider.class)
+    void shouldShowRequiredMessagesOnDifferentViewports(String device, int width, int height) {
+        loginPage.emulateViewport(width, height);
+
+        loginPage.clickLogin();
+        assertThat(loginPage.fieldErrorMessages())
+                .contains("Informe o e-mail.", "Informe a senha.");
+    }
 }
