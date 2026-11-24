@@ -327,4 +327,32 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(lida.getStatus()).isEqualTo(StatusPrescricao.FINALIZADA);
         }
     }
+
+    @Nested
+    @DisplayName("PATCH /{atendimentoId}/prescricoes/{prescricaoId}/finalizar")
+    class Finalizar {
+
+        @Test
+        @DisplayName("Should return 204 and set the open prescription to FINALIZADA")
+        void shouldReturn204AndSetTheOpenPrescriptionToFinalizada() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            Prescricao prescricao = atendimento.emitirPrescricao(
+                    List.of(EntityBuilder.createRandomItemPrescricao()));
+            atendimentoRepository.salvar(atendimento);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().patch("/api/v1/atendimentos/" + atendimento.getId().getValue()
+                            + "/prescricoes/" + prescricao.getId().getValue() + "/finalizar")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(204);
+
+            Prescricao finalizada = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().getFirst();
+
+            assertThat(finalizada.getStatus()).isEqualTo(StatusPrescricao.FINALIZADA);
+        }
+
+    }
 }
