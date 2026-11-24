@@ -59,4 +59,18 @@ public class RegisterUiTest extends BaseSeleniumTest {
                 .containsExactly("As senhas não conferem.");
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
     }
+
+    @Test
+    @DisplayName("shouldRejectInvalidEmailFormat")
+    void shouldRejectInvalidEmailFormat() {
+        registerPage.submitRegistrationForm(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "email-invalido",
+                "senha123", "senha123");
+
+        assertThat(registerPage.fieldErrorMessages())
+                .containsExactly("E-mail inválido.");
+        assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
 }
