@@ -91,4 +91,20 @@ public class LoginPageObject extends BasePageObject {
                 .until(ExpectedConditions.visibilityOfElementLocated(successMessage))
                 .getText();
     }
+
+    public boolean isEmailFieldDisplayed() {
+        return driver.findElement(emailInput).isDisplayed();
+    }
+
+    public boolean isPasswordFieldDisplayed() {
+        return driver.findElement(passwordInput).isDisplayed();
+    }
+
+    public boolean isLoginButtonDisplayed() {
+        return driver.findElement(loginButton).isDisplayed();
+    }
+
+    public boolean isRegisterLinkDisplayed() {
+        return driver.findElement(registerLink).isDisplayed();
+    }
 }
