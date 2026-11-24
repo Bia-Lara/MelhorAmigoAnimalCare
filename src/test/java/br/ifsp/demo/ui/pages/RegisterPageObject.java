@@ -1,17 +1,15 @@
 package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
+import br.ifsp.demo.ui.base.ViewportSupport;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 public class RegisterPageObject extends BasePageObject {
     private final By nameInput= By.name("name");
@@ -23,8 +21,11 @@ public class RegisterPageObject extends BasePageObject {
     private final By fieldErrors = By.cssSelector(".field__error");
     private final By registerError = By.cssSelector(".alert--error");
 
+    private final ViewportSupport viewport;
+
     public RegisterPageObject(WebDriver driver){
         super(driver);
+        this.viewport = new ViewportSupport(driver);
     }
 
     public void openRegisterPage(){
@@ -84,16 +85,11 @@ public class RegisterPageObject extends BasePageObject {
     }
 
     public void emulateViewport(int width, int height){
-        ((ChromeDriver) driver).executeCdpCommand("Emulation.setDeviceMetricsOverride", Map.of(
-                "width", width,
-                "height", height,
-                "deviceScaleFactor", 1,
-                "mobile", width < 500));
+        viewport.emulate(width, height);
         openRegisterPage();
     }
 
     public boolean hasHorizontalScroll(){
-        Object result = ((JavascriptExecutor) driver).executeScript("return document.documentElement.scrollWidth > document.documentElement.clientWidth;");
-        return Boolean.TRUE.equals(result);
+        return viewport.hasHorizontalScroll();
     }
 }

@@ -1,14 +1,13 @@
 package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
+import br.ifsp.demo.ui.base.ViewportSupport;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 public class LoginPageObject extends BasePageObject {
     private final By emailInput = By.name("email");
@@ -19,8 +18,11 @@ public class LoginPageObject extends BasePageObject {
     private final By registerLink = By.linkText("Cadastre-se");
     private final By successMessage = By.cssSelector(".alert--success");
 
+    private final ViewportSupport viewport;
+
     public LoginPageObject(WebDriver driver){
         super(driver);
+        this.viewport = new ViewportSupport(driver);
     }
 
     public void openLoginPage(){
@@ -109,11 +111,8 @@ public class LoginPageObject extends BasePageObject {
     }
 
     public void emulateViewport(int width, int height) {
-        ((ChromeDriver) driver).executeCdpCommand("Emulation.setDeviceMetricsOverride", Map.of(
-                "width", width,
-                "height", height,
-                "deviceScaleFactor", 1,
-                "mobile", width < 500));
+        viewport.emulate(width, height);
+        openLoginPage();
     }
 
     public boolean isFormFullyVisible(){
@@ -124,7 +123,6 @@ public class LoginPageObject extends BasePageObject {
     }
 
     public boolean hasHorizontalScroll(){
-        Object result = ((JavascriptExecutor) driver).executeScript("return document.documentElement.scrollWidth > document.documentElement.clientWidth;");
-        return Boolean.TRUE.equals(result);
+        return viewport.hasHorizontalScroll();
     }
 }
