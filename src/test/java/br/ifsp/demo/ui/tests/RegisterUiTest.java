@@ -7,6 +7,12 @@ import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,5 +93,17 @@ public class RegisterUiTest extends BaseSeleniumTest {
 
         assertThat(registerPage.registerErrorMessage()).isEqualTo("Email already registered: " + email);
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
+
+    @ParameterizedTest(name = "{0} ({1}x{2})")
+    @CsvSource({"mobile,375,667", "tablet,768,1024", "desktop,1366,768"})
+    @DisplayName("shouldDisplayRegisterFormWithoutHorizontalScroll")
+    void shouldDisplayRegisterFormWithoutHorizontalScroll(String device, int width, int height) {
+        registerPage.emulateViewport(width, height);
+
+        assertThat(registerPage.isFormFullyVisible()).isTrue();
+        assertThat(registerPage.hasHorizontalScroll())
+                .as("scroll horizontal em " + device)
+                .isFalse();
     }
 }
