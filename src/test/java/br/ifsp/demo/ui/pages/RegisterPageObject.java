@@ -3,10 +3,12 @@ package br.ifsp.demo.ui.pages;
 import br.ifsp.demo.ui.base.BasePageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class RegisterPageObject extends BasePageObject {
     private final By nameInput= By.name("name");
@@ -15,6 +17,7 @@ public class RegisterPageObject extends BasePageObject {
     private final By passwordInput = By.name("password");
     private final By confirmPasswordInput = By.name("confirmPassword");
     private final By registerButton = By.cssSelector("form button[type='submit']");
+    private final By fieldErrors = By.cssSelector(".field__error");
 
     public RegisterPageObject(WebDriver driver){
         super(driver);
@@ -48,5 +51,13 @@ public class RegisterPageObject extends BasePageObject {
                 .until(ExpectedConditions.urlContains("/login"));
     }
 
+    public List<String> fieldErrorMessages(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(fieldErrors));
 
+        return driver.findElements(fieldErrors)
+                .stream()
+                .map(WebElement::getText)
+                .toList();
+    }
 }
