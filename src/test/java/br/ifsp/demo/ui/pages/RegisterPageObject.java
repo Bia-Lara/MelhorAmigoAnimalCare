@@ -72,4 +72,11 @@ public class RegisterPageObject extends BasePageObject {
                 .until(ExpectedConditions.visibilityOfElementLocated(registerError))
                 .getText();
     }
+
+    public boolean isFormFullyVisible(){
+        return driver.findElements(By.cssSelector("form input[name]"))
+                .stream()
+                .allMatch(WebElement::isDisplayed)
+                && driver.findElement(registerButton).isDisplayed();
+    }
 }
