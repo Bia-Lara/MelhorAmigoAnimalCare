@@ -96,7 +96,15 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @ParameterizedTest(name = "{0} ({1}x{2})")
-    @CsvSource({"mobile,375,667", "tablet,768,1024", "desktop,1366,768"})
+    @CsvSource({
+            "Mobile pequeno, 320, 568",
+            "Mobile, 375, 667",
+            "Mobile grande, 414, 896",
+            "Tablet retrato, 768, 1024",
+            "Tablet paisagem, 1024, 768",
+            "Laptop, 1366, 768",
+            "Desktop Full HD, 1920, 1080"
+    })
     @DisplayName("shouldDisplayRegisterFormWithoutHorizontalScroll")
     void shouldDisplayRegisterFormWithoutHorizontalScroll(String device, int width, int height) {
         registerPage.emulateViewport(width, height);
