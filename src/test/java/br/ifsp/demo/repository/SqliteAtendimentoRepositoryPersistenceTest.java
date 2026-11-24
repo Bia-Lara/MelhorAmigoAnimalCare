@@ -14,6 +14,7 @@ import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.model.prescricao.Prescricao;
 import br.ifsp.demo.model.prescricao.PrescricaoId;
 import br.ifsp.demo.model.prescricao.StatusPrescricao;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,6 +254,17 @@ class SqliteAtendimentoRepositoryPersistenceTest {
                 List.of(), List.of()));
 
         assertThat(contar("diagnostico")).isEqualTo(1);
+    }
+
+    @Test
+    void insert_diagnosticoComMesmaChaveComposta_eRejeitado() {
+        String atendimentoId = UUID.randomUUID().toString();
+        String sql = "INSERT INTO diagnostico (atendimento_id, ordem, codigo, descricao, tipo) VALUES (?,?,?,?,?)";
+        jdbc.update(sql, atendimentoId, 0, "A01", "Gastrite", "PRESUNTIVO");
+
+        assertThatThrownBy(() -> jdbc.update(sql, atendimentoId, 0, "B02", "Infeccao", "DEFINITIVO"))
+                .isInstanceOf(UncategorizedSQLException.class)
+                .hasMessageContaining("UNIQUE constraint failed");
     }
 
     @Test
