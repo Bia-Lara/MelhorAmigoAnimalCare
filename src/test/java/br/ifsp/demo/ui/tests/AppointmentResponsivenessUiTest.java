@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Tag("UITest")
-public class AppoinmentResponsivenessUiTest extends BaseSeleniumTest {
+public class AppointmentResponsivenessUiTest extends BaseSeleniumTest {
 
     private AppointmentPageObject appointmentPage;
 
