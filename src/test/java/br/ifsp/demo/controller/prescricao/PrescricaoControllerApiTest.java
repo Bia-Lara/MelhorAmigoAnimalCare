@@ -284,6 +284,23 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(cancelada.getStatus()).isEqualTo(StatusPrescricao.CANCELADA);
         }
 
+        @Test
+        @DisplayName("Should return 409 when prescription is already cancelled")
+        void shouldReturn409WhenAlreadyCancelled() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            Prescricao prescricao = atendimento.emitirPrescricao(
+                    List.of(EntityBuilder.createRandomItemPrescricao()));
+            prescricao.cancelar();
+            atendimentoRepository.salvar(atendimento);
 
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().patch("/api/v1/atendimentos/" + atendimento.getId().getValue()
+                            + "/prescricoes/" + prescricao.getId().getValue() + "/cancelar")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+        }
     }
 }
