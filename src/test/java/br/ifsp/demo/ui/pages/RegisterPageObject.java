@@ -18,6 +18,7 @@ public class RegisterPageObject extends BasePageObject {
     private final By confirmPasswordInput = By.name("confirmPassword");
     private final By registerButton = By.cssSelector("form button[type='submit']");
     private final By fieldErrors = By.cssSelector(".field__error");
+    private final By registerError = By.cssSelector(".alert--error");
 
     public RegisterPageObject(WebDriver driver){
         super(driver);
@@ -64,5 +65,11 @@ public class RegisterPageObject extends BasePageObject {
     public void submitRegistrationForm(String name, String lastname, String email, String password, String confirmPassword){
         fillRegistrationForm(name, lastname, email, password, confirmPassword);
         clickRegister();
+    }
+
+    public String registerErrorMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(registerError))
+                .getText();
     }
 }
