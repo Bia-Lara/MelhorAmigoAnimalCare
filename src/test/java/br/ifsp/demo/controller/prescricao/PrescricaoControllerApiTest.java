@@ -302,5 +302,29 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+
+        @Test
+        @DisplayName("Should return 409 when prescription is already finalized")
+        void shouldReturn409WhenAlreadyFinalized() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            Prescricao prescricao = atendimento.emitirPrescricao(
+                    List.of(EntityBuilder.createRandomItemPrescricao()));
+            prescricao.finalizar();
+            atendimentoRepository.salvar(atendimento);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().patch("/api/v1/atendimentos/" + atendimento.getId().getValue()
+                            + "/prescricoes/" + prescricao.getId().getValue() + "/cancelar")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+
+            Prescricao lida = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().getFirst();
+            assertThat(lida.getStatus()).isEqualTo(StatusPrescricao.FINALIZADA);
+        }
     }
 }
