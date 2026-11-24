@@ -146,4 +146,13 @@ public class LoginUiTest extends BaseSeleniumTest {
         assertThat(loginPage.fieldErrorMessages())
                 .contains("Informe o e-mail.", "Informe a senha.");
     }
+
+    @ParameterizedTest
+    @DisplayName("shouldKeepPasswordMaskedOnDifferentsViewports")
+    @ArgumentsSource(ViewportsProvider.class)
+    void shouldKeepPasswordMaskedOnDifferentsViewports(String device, int width, int height) {
+        loginPage.emulateViewport(width, height);
+
+        assertThat(loginPage.passwordFieldType()).isEqualTo("password");
+    }
 }
