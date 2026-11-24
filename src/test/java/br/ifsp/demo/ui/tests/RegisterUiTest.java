@@ -73,4 +73,19 @@ public class RegisterUiTest extends BaseSeleniumTest {
                 .containsExactly("E-mail inválido.");
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
     }
+
+    @Test
+    @DisplayName("shouldRejectDuplicateEmail")
+    void shouldRejectDuplicateEmail() {
+        String email = faker.internet().emailAddress();
+        String password = faker.internet().password(6, 10);
+
+        registerPage.registerAccount(faker.name().firstName(), faker.name().lastName(), email, password, password);
+        registerPage.openRegisterPage();
+
+        registerPage.submitRegistrationForm(faker.name().firstName(), faker.name().lastName(), email, password, password);
+
+        assertThat(registerPage.registerErrorMessage()).isEqualTo("Email already registered: " + email);
+        assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
 }
