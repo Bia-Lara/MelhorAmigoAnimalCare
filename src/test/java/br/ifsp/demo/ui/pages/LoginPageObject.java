@@ -2,6 +2,7 @@ package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -106,5 +107,9 @@ public class LoginPageObject extends BasePageObject {
 
     public boolean isRegisterLinkDisplayed() {
         return driver.findElement(registerLink).isDisplayed();
+    }
+
+    public void resize(int width, int height) {
+        driver.manage().window().setSize(new Dimension(width, height));
     }
 }
