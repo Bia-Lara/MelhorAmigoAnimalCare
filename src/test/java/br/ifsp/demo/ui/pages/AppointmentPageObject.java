@@ -170,6 +170,6 @@ public class AppointmentPageObject extends BasePageObject {
     }
 
     public boolean isRecentCardDisplayed() {
-        return driver.findElement(recentAppointments).isDisplayed();
+        return driver.findElement(By.xpath("//*[self::h1 or self::h2 or self::h3][contains(normalize-space(), 'Recentes neste navegador')]")).isDisplayed();
     }
 }
