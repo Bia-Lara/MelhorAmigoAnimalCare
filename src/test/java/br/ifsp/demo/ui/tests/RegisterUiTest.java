@@ -1,6 +1,7 @@
 package br.ifsp.demo.ui.tests;
 
 import br.ifsp.demo.ui.base.BaseSeleniumTest;
+import br.ifsp.demo.ui.base.ViewportsProvider;
 import br.ifsp.demo.ui.pages.LoginPageObject;
 import br.ifsp.demo.ui.pages.RegisterPageObject;
 import com.github.javafaker.Faker;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -96,15 +98,7 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @ParameterizedTest(name = "{0} ({1}x{2})")
-    @CsvSource({
-            "Mobile pequeno, 320, 568",
-            "Mobile, 375, 667",
-            "Mobile grande, 414, 896",
-            "Tablet retrato, 768, 1024",
-            "Tablet paisagem, 1024, 768",
-            "Laptop, 1366, 768",
-            "Desktop Full HD, 1920, 1080"
-    })
+    @ArgumentsSource(ViewportsProvider.class)
     @DisplayName("shouldDisplayRegisterFormWithoutHorizontalScroll")
     void shouldDisplayRegisterFormWithoutHorizontalScroll(String device, int width, int height) {
         registerPage.emulateViewport(width, height);
