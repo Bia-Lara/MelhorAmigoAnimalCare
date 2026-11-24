@@ -5,6 +5,7 @@ import br.ifsp.demo.model.abertura.AnimalId;
 import br.ifsp.demo.model.abertura.Atendimento;
 import br.ifsp.demo.model.prescricao.ItemPrescricao;
 import br.ifsp.demo.model.prescricao.Prescricao;
+import br.ifsp.demo.model.prescricao.StatusPrescricao;
 import br.ifsp.demo.repository.AtendimentoRepository;
 import br.ifsp.demo.security.user.User;
 import br.ifsp.demo.shared.EntityBuilder;
@@ -251,5 +252,38 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("message", not(emptyOrNullString()));
         }
+    }
+
+    @Nested
+    @DisplayName("PATCH /{atendimentoId}/prescricoes/{prescricaoId}/cancelar")
+    class Cancelar {
+
+        @Test
+        @DisplayName("Should return 204 and set the open prescription to CANCELADA")
+        void shouldReturn204AndCancelOpenPrescription() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            Prescricao prescricao = atendimento.emitirPrescricao(List.of(EntityBuilder.createRandomItemPrescricao()));
+            atendimentoRepository.salvar(atendimento);
+
+            UUID atendimentoId = atendimento.getId().getValue();
+            UUID prescricaoId = prescricao.getId().getValue();
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().patch("/api/v1/atendimentos/" + atendimentoId + "/prescricoes/"
+                            + prescricaoId + "/cancelar")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(204)
+                    .body(emptyOrNullString());
+
+            Prescricao cancelada = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().getFirst();
+
+            assertThat(cancelada.getId()).isEqualTo(prescricao.getId());
+            assertThat(cancelada.getStatus()).isEqualTo(StatusPrescricao.CANCELADA);
+        }
+
+
     }
 }
