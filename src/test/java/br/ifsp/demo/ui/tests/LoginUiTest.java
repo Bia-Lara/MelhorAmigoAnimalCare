@@ -155,4 +155,22 @@ public class LoginUiTest extends BaseSeleniumTest {
 
         assertThat(loginPage.passwordFieldType()).isEqualTo("password");
     }
+
+    @Test
+    @DisplayName("shouldKeepFormUsableWhenRotatingMobileDevice")
+    void shouldKeepFormUsableWhenRotatingMobileDevice() {
+        loginPage.emulateViewport(375, 667);
+
+        assertThat(loginPage.isEmailFieldDisplayed()).isTrue();
+        assertThat(loginPage.isPasswordFieldDisplayed()).isTrue();
+        assertThat(loginPage.isLoginButtonDisplayed()).isTrue();
+        assertThat(loginPage.hasHorizontalScroll()).isFalse();
+
+        loginPage.emulateViewport(667, 375);
+
+        assertThat(loginPage.isEmailFieldDisplayed()).isTrue();
+        assertThat(loginPage.isPasswordFieldDisplayed()).isTrue();
+        assertThat(loginPage.isLoginButtonDisplayed()).isTrue();
+        assertThat(loginPage.hasHorizontalScroll()).isFalse();
+    }
 }
