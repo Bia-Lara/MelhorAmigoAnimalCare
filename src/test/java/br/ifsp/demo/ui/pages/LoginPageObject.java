@@ -116,6 +116,13 @@ public class LoginPageObject extends BasePageObject {
                 "mobile", width < 500));
     }
 
+    public boolean isFormFullyVisible(){
+        return driver.findElements(By.cssSelector("form input[name]"))
+                .stream()
+                .allMatch(WebElement::isDisplayed)
+                && driver.findElement(registerLink).isDisplayed();
+    }
+
     public boolean hasHorizontalScroll(){
         Object result = ((JavascriptExecutor) driver).executeScript("return document.documentElement.scrollWidth > document.documentElement.clientWidth;");
         return Boolean.TRUE.equals(result);

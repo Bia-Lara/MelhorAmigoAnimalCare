@@ -122,4 +122,17 @@ public class LoginUiTest extends BaseSeleniumTest {
         assertThat(loginPage.isLoginButtonDisplayed()).isTrue();
         assertThat(loginPage.isRegisterLinkDisplayed()).isTrue();
     }
+
+
+    @ParameterizedTest(name = "[{index}] {0} ({1}x{2})")
+    @DisplayName("shouldNotHaveHorizontalScrollInDifferentViewports")
+    @ArgumentsSource(ViewportsProvider.class)
+    void shouldNotHaveHorizontalScrollInDifferentViewports(String device, int width, int height) {
+        loginPage.emulateViewport(width, height);
+
+        assertThat(loginPage.isFormFullyVisible()).isTrue();
+        assertThat(loginPage.hasHorizontalScroll())
+                .as("Scroll horizontal em %s (%dx%d)", device, width, height)
+                .isFalse();
+    }
 }
