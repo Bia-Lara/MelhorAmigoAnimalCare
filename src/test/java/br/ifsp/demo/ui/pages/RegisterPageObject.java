@@ -60,4 +60,9 @@ public class RegisterPageObject extends BasePageObject {
                 .map(WebElement::getText)
                 .toList();
     }
+
+    public void submitRegistrationForm(String name, String lastname, String email, String password, String confirmPassword){
+        fillRegistrationForm(name, lastname, email, password, confirmPassword);
+        clickRegister();
+    }
 }
