@@ -17,6 +17,7 @@ public class LoginPageObject extends BasePageObject {
     private final By fieldErrors = By.cssSelector(".field__error");
     private final By loginError = By.cssSelector(".alert--error");
     private final By registerLink = By.linkText("Cadastre-se");
+    private final By successMessage = By.cssSelector(".alert--success");
 
     public LoginPageObject(WebDriver driver){
         super(driver);
@@ -83,5 +84,11 @@ public class LoginPageObject extends BasePageObject {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(emailInput))
                 .sendKeys(email);
+    }
+
+    public String successMessage(){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(successMessage))
+                .getText();
     }
 }
