@@ -118,7 +118,7 @@ public class LoginUiTest extends BaseSeleniumTest {
             "Desktop Full HD, 1920, 1080"
     })
     void shouldDisplayAllLoginElementsInDifferentViewports(String device, int width, int height) {
-        loginPage.resize(width, height);
+        loginPage.emulateViewport(width, height);
 
         assertThat(loginPage.isEmailFieldDisplayed()).isTrue();
         assertThat(loginPage.isPasswordFieldDisplayed()).isTrue();
