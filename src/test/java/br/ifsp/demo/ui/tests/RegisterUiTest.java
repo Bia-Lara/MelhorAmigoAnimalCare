@@ -32,4 +32,17 @@ public class RegisterUiTest extends BaseSeleniumTest {
         assertThat(new LoginPageObject(driver).successMessage())
                 .isEqualTo("Conta criada! Entre com " + email + ".");
     }
+
+    @Test
+    @DisplayName("shouldShowRequiredMessagesWhenSubmittingEmptyForm")
+    void shouldShowRequiredMessagesWhenSubmittingEmptyForm() {
+        registerPage.clickRegister();
+
+        assertThat(registerPage.fieldErrorMessages()).containsExactly(
+                "Informe o nome.",
+                "Informe o sobrenome.",
+                "Informe o e-mail.",
+                "Informe a senha.");
+        assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
 }
