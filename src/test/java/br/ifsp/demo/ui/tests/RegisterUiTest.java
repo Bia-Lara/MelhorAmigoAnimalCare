@@ -45,4 +45,18 @@ public class RegisterUiTest extends BaseSeleniumTest {
                 "Informe a senha.");
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
     }
+
+    @Test
+    @DisplayName("shouldRejectMismatchedPasswordConfirmation")
+    void shouldRejectMismatchedPasswordConfirmation() {
+        registerPage.submitRegistrationForm(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                faker.internet().emailAddress(),
+                "senha123", "senha456");
+
+        assertThat(registerPage.fieldErrorMessages())
+                .containsExactly("As senhas não conferem.");
+        assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
 }
