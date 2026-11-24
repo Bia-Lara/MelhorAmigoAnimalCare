@@ -8,6 +8,8 @@ import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -103,4 +105,24 @@ public class LoginUiTest extends BaseSeleniumTest {
         driver.manage().window().minimize();
     }
 
+
+    @ParameterizedTest(name = "[{index}] {0} ({1}x{2})")
+    @DisplayName("shouldDisplayAllLoginElementsInDifferentViewports")
+    @CsvSource({
+            "Mobile pequeno, 320, 568",
+            "Mobile, 375, 667",
+            "Mobile grande, 414, 896",
+            "Tablet retrato, 768, 1024",
+            "Tablet paisagem, 1024, 768",
+            "Laptop, 1366, 768",
+            "Desktop Full HD, 1920, 1080"
+    })
+    void shouldDisplayAllLoginElementsInDifferentViewports(String device, int width, int height) {
+        loginPage.resize(width, height);
+
+        assertThat(loginPage.isEmailFieldDisplayed()).isTrue();
+        assertThat(loginPage.isPasswordFieldDisplayed()).isTrue();
+        assertThat(loginPage.isLoginButtonDisplayed()).isTrue();
+        assertThat(loginPage.isRegisterLinkDisplayed()).isTrue();
+    }
 }
