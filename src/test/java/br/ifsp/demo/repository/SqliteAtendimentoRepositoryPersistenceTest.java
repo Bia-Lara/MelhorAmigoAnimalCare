@@ -67,12 +67,14 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void buscarPorAnimalId_semAtendimentos_retornaListaVazia() {
+    @DisplayName("should return empty list when animal has no atendimentos")
+    void shouldReturnEmptyListWhenAnimalHasNoAtendimentos() {
         assertThat(repository.buscarPorAnimalId(novoAnimal())).isEmpty();
     }
 
     @Test
-    void salvar_atendimentoMinimo_persisteComCamposNulos() {
+    @DisplayName("should Persist minimal atendimento with null fields")
+    void shouldPersistMinimalAtendimentoWithNullFields() {
         Atendimento original = Atendimento.abrirProntoAtendimento(novoAnimal());
         repository.salvar(original);
 
@@ -89,13 +91,15 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void buscarUmPorAtendimentoId_inexistente_lancaExcecao() {
+    @DisplayName("should throw exception when atendimento id does not exist")
+    void shouldThrowExceptionWhenAtendimentoIdDoesNotExist() {
         assertThatThrownBy(() -> repository.buscarUmPorAtendimentoId(AtendimentoId.novo()))
                 .isInstanceOf(AtendimentoNaoEncontradoException.class);
     }
 
     @Test
-    void buscarPorAnimalId_retornaApenasAtendimentosDoAnimalInformado() {
+    @DisplayName("should return only atendimentos of the given animal")
+    void shouldReturnOnlyAtendimentosOfGivenAnimal() {
         AnimalId a1 = novoAnimal();
         AnimalId a2 = novoAnimal();
         repository.salvar(emAndamento(a1));
@@ -109,7 +113,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_doisEmAndamentoParaMesmoAnimal_violaUnicidade() {
+    @DisplayName("should violate uniqueness when saving two in-progress atendimentos for the same animal")
+    void shouldViolateUniquenessWhenSavingTwoInProgressAtendimentosForSameAnimal() {
         AnimalId animal = novoAnimal();
         repository.salvar(emAndamento(animal));
 
@@ -119,7 +124,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_doisAtendimentosParaMesmoAgendamento_violaUnicidade() {
+    @DisplayName("should violate uniqueness when saving two atendimentos for the same agendamento")
+    void shouldViolateUniquenessWhenSavingTwoAtendimentosForSameAgendamento() {
         AgendamentoId agendamento = AgendamentoId.of(UUID.randomUUID());
         repository.salvar(atendimento(novoAnimal(), StatusAtendimento.EM_ANDAMENTO,
                 LocalDateTime.now(), null, agendamento));
@@ -131,7 +137,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_variosProntosAtendimentosSemAgendamento_saoPermitidos() {
+    @DisplayName("should allow multiple walk-in atendimentos without agendamento")
+    void shouldAllowMultipleWalkInAtendimentosWithoutAgendamento() {
         repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
         repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
         repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
@@ -140,7 +147,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_concluidoMaisNovoEmAndamentoParaMesmoAnimal_ePermitido() {
+    @DisplayName("should allow a new in-progress atendimento when the previous one for the same animal is completed")
+    void shouldAllowNewInProgressAtendimentoWhenPreviousOneForSameAnimalIsCompleted() {
         AnimalId animal = novoAnimal();
         repository.salvar(atendimento(animal, StatusAtendimento.CONCLUIDO,
                 LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1), null));
@@ -150,7 +158,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void existeEmAndamentoParaAnimal_comAtendimentoEmAndamento_retornaTrue() {
+    @DisplayName("should return true when animal has an in-progress atendimento")
+    void shouldReturnTrueWhenAnimalHasInProgressAtendimento() {
         AnimalId animal = novoAnimal();
         repository.salvar(emAndamento(animal));
 
@@ -158,7 +167,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void existeEmAndamentoParaAnimal_somenteConcluidoOuCancelado_retornaFalse() {
+    @DisplayName("should return false when animal has only completed or cancelled atendimentos")
+    void shouldReturnFalseWhenAnimalHasOnlyCompletedOrCancelledAtendimentos() {
         AnimalId animal = novoAnimal();
         repository.salvar(atendimento(animal, StatusAtendimento.CONCLUIDO,
                 LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1), null));
@@ -169,18 +179,21 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void existeEmAndamentoParaAnimal_animalSemAtendimentos_retornaFalse() {
+    @DisplayName("should return false when animal has no atendimentos")
+    void shouldReturnFalseWhenAnimalHasNoAtendimentos() {
         assertThat(repository.existeEmAndamentoParaAnimal(novoAnimal())).isFalse();
     }
 
     @Test
-    void existeEmAndamentoParaAnimal_emAndamentoDeOutroAnimal_retornaFalse() {
+    @DisplayName("should return false when the in-progress atendimento belongs to another animal")
+    void shouldReturnFalseWhenInProgressAtendimentoBelongsToAnotherAnimal() {
         repository.salvar(emAndamento(novoAnimal()));
         assertThat(repository.existeEmAndamentoParaAnimal(novoAnimal())).isFalse();
     }
 
     @Test
-    void existeAtendimentoParaAgendamento_comAtendimento_retornaTrue() {
+    @DisplayName("should return true when an atendimento exists for the agendamento")
+    void shouldReturnTrueWhenAtendimentoExistsForAgendamento() {
         AgendamentoId ag = AgendamentoId.of(UUID.randomUUID());
         repository.salvar(atendimento(novoAnimal(), StatusAtendimento.EM_ANDAMENTO,
                 LocalDateTime.now(), null, ag));
@@ -189,24 +202,28 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void existeAtendimentoParaAgendamento_semAtendimento_retornaFalse() {
+    @DisplayName("should return false when no atendimento exists for the agendamento")
+    void shouldReturnFalseWhenNoAtendimentoExistsForAgendamento() {
         assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
     }
 
     @Test
-    void existeAtendimentoParaAgendamento_prontoAtendimento_naoCasaComNenhumAgendamento() {
+    @DisplayName("should not match any agendamento when the atendimento is a walk-in")
+    void shouldNotMatchAnyAgendamentoWhenAtendimentoIsWalkIn() {
         repository.salvar(Atendimento.abrirProntoAtendimento(novoAnimal()));
         assertThat(repository.existeAtendimentoParaAgendamento(AgendamentoId.of(UUID.randomUUID()))).isFalse();
     }
 
     @Test
-    void existeAtendimentoParaAgendamento_parametroNulo_naoDeveLancarExcecao() {
+    @DisplayName("should not throw exception when agendamento is null")
+    void shouldNotThrowExceptionWhenAgendamentoIsNull() {
         assertThatCode(() -> repository.existeAtendimentoParaAgendamento(null))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void salvar_comDiagnosticos_recuperaTodosOsCampos() {
+    @DisplayName("should retrieve all fields when saving with diagnosticos")
+    void shouldRetrieveAllFieldsWhenSavingWithDiagnosticos() {
         Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
                 StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
                 List.of(new Diagnostico("A01", "Gastrite", TipoDiagnostico.PRESUNTIVO),
@@ -222,7 +239,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_comDiagnosticos_preservaOrdemDeInsercao() {
+    @DisplayName("should preserve insertion order of diagnosticos")
+    void shouldPreserveInsertionOrderOfDiagnosticos() {
         Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
                 StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
                 List.of(new Diagnostico("Z", "ultimo-alfabeto", TipoDiagnostico.EMPIRICO),
@@ -239,7 +257,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_regravandoComMenosDiagnosticos_removeOsAntigos() {
+    @DisplayName("should remove old diagnosticos when resaving with fewer")
+    void shouldRemoveOldDiagnosticosWhenResavingWithFewer() {
         AtendimentoId id = AtendimentoId.novo();
         AnimalId animal = novoAnimal();
         repository.salvar(Atendimento.reconstituir(id, animal, null, StatusAtendimento.EM_ANDAMENTO,
@@ -257,7 +276,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void insert_diagnosticoComMesmaChaveComposta_eRejeitado() {
+    @DisplayName("should reject diagnostico insert with the same composite key")
+    void shouldRejectDiagnosticoInsertWithSameCompositeKey() {
         String atendimentoId = UUID.randomUUID().toString();
         String sql = "INSERT INTO diagnostico (atendimento_id, ordem, codigo, descricao, tipo) VALUES (?,?,?,?,?)";
         jdbc.update(sql, atendimentoId, 0, "A01", "Gastrite", "PRESUNTIVO");
@@ -268,14 +288,18 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void buscarPorAnimalId_ordenaPorDataHoraDecrescente() {
+    @DisplayName("should order atendimentos by data hora descending")
+    void shouldOrderAtendimentosByDataHoraDescending() {
         AnimalId animal = novoAnimal();
         Atendimento antigo = atendimento(animal, StatusAtendimento.CONCLUIDO,
-                LocalDateTime.of(2026, 1, 1, 10, 0), LocalDateTime.of(2026, 1, 1, 11, 0), null);
+                LocalDateTime.of(2026, 1, 1, 10, 0),
+                LocalDateTime.of(2026, 1, 1, 11, 0), null);
         Atendimento meio = atendimento(animal, StatusAtendimento.CONCLUIDO,
-                LocalDateTime.of(2026, 1, 1, 10, 0, 30), LocalDateTime.of(2026, 1, 1, 11, 0), null);
+                LocalDateTime.of(2026, 1, 1, 10, 0, 30),
+                LocalDateTime.of(2026, 1, 1, 11, 0), null);
         Atendimento recente = atendimento(animal, StatusAtendimento.CONCLUIDO,
-                LocalDateTime.of(2026, 3, 5, 9, 0), LocalDateTime.of(2026, 3, 5, 10, 0), null);
+                LocalDateTime.of(2026, 3, 5, 9, 0),
+                LocalDateTime.of(2026, 3, 5, 10, 0), null);
         repository.salvar(meio);
         repository.salvar(antigo);
         repository.salvar(recente);
@@ -286,7 +310,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_comPrescricao_recuperaStatusEItensNaOrdem() {
+    @DisplayName("should retrieve status and items in order when saving with prescricao")
+    void shouldRetrieveStatusAndItemsInOrderWhenSavingWithPrescricao() {
         Prescricao prescricao = Prescricao.reconstituir(PrescricaoId.novo(),
                 List.of(new ItemPrescricao("Zeta", 10, "ORAL", "8/8h", 5),
                         new ItemPrescricao("Alfa", 20, "IV", "12/12h", 3)),
@@ -306,7 +331,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_regravandoSemPrescricoes_removePrescricoesEItens() {
+    @DisplayName("should remove prescricoes and items when resaving without them")
+    void shouldRemovePrescricoesAndItemsWhenResavingWithoutThem() {
         AtendimentoId id = AtendimentoId.novo();
         AnimalId animal = novoAnimal();
         Prescricao p = Prescricao.reconstituir(PrescricaoId.novo(),
@@ -323,7 +349,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_comExames_recuperaStatusEResultado() {
+    @DisplayName("should retrieve status and result when saving with exames")
+    void shouldRetrieveStatusAndResultWhenSavingWithExames() {
         ExameSolicitado pendente = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Raio-X"), LocalDateTime.now());
         ExameSolicitado concluido = new ExameSolicitado(new Exame(ExameId.of(UUID.randomUUID()), "Ultrassom"), LocalDateTime.now());
         concluido.setResultado("Sem alteracoes");
@@ -340,7 +367,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_atendimentoReabertoEmAndamento_naoDeveManterDataDeConclusao() {
+    @DisplayName("should not keep conclusion date when a reopened atendimento is saved")
+    void shouldNotKeepConclusionDateWhenReopenedAtendimentoIsSaved() {
         AnimalId animal = novoAnimal();
         LocalDateTime agora = LocalDateTime.now();
         Atendimento a = atendimento(animal, StatusAtendimento.CONCLUIDO, agora.minusHours(2), agora.minusHours(1), null);
@@ -354,7 +382,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void insert_chavePrimariaDuplicada_eRejeitada() {
+    @DisplayName("should reject insert with duplicate primary key")
+    void shouldRejectInsertWithDuplicatePrimaryKey() {
         String id = UUID.randomUUID().toString();
         jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
                 "CONCLUIDO", LocalDateTime.now().toString());
@@ -366,7 +395,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void insert_animalIdNulo_eRejeitado() {
+    @DisplayName("should reject insert with null animal id")
+    void shouldRejectInsertWithNullAnimalId() {
         assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, UUID.randomUUID().toString(),
                 null, null, "CONCLUIDO", LocalDateTime.now().toString()))
                 .isInstanceOf(UncategorizedSQLException.class)
@@ -374,7 +404,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void insert_statusNulo_eRejeitado() {
+    @DisplayName("should reject insert with null status")
+    void shouldRejectInsertWithNullStatus() {
         assertThatThrownBy(() -> jdbc.update(INSERT_ATENDIMENTO, UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(), null, null, LocalDateTime.now().toString()))
                 .isInstanceOf(UncategorizedSQLException.class)
@@ -382,7 +413,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void insert_statusInvalido_bancoAceitaMasLeituraFalha() {
+    @DisplayName("should accept invalid status on insert but fail on read")
+    void shouldAcceptInvalidStatusOnInsertButFailOnRead() {
         String id = UUID.randomUUID().toString();
         jdbc.update(INSERT_ATENDIMENTO, id, UUID.randomUUID().toString(), null,
                 "INVALIDO", LocalDateTime.now().toString());
@@ -392,7 +424,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_sinaisVitaisEAnamneseAdicionadosDepois_saoAtualizados() {
+    @DisplayName("should update sinais vitais and anamnese added after the first save")
+    void shouldUpdateSinaisVitaisAndAnamneseAddedAfterFirstSave() {
         Atendimento a = emAndamento(novoAnimal());
         repository.salvar(a);
 
@@ -406,7 +439,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_mesmoIdDuasVezes_naoDuplicaEAtualizaStatus() {
+    @DisplayName("should not duplicate and should update status when saving the same id twice")
+    void shouldNotDuplicateAndShouldUpdateStatusWhenSavingSameIdTwice() {
         Atendimento a = emAndamento(novoAnimal());
         repository.salvar(a);
         a.cancelar("Tutor desistiu");
@@ -419,7 +453,8 @@ class SqliteAtendimentoRepositoryPersistenceTest {
     }
 
     @Test
-    void salvar_comDuasPrescricoes_recuperaTodosOsCamposDosItensNaOrdem() {
+    @DisplayName("should retrieve all item fields in order when saving with two prescricoes")
+    void shouldRetrieveAllItemFieldsInOrderWhenSavingWithTwoPrescricoes() {
         Prescricao primeira = Prescricao.reconstituir(PrescricaoId.novo(),
                 List.of(new ItemPrescricao("Dipirona", 10, "ORAL", "8/8h", 5)),
                 StatusPrescricao.FINALIZADA, LocalDateTime.of(2026, 1, 1, 10, 0));
