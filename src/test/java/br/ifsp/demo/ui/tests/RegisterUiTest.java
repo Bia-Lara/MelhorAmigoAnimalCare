@@ -88,4 +88,18 @@ public class RegisterUiTest extends BaseSeleniumTest {
         assertThat(registerPage.registerErrorMessage()).isEqualTo("Email already registered: " + email);
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
     }
+
+    @Test
+    @DisplayName("Should reject without name")
+    void shouldRejectWithoutName() {
+        String email = faker.internet().emailAddress();
+        String password = faker.internet().password(6, 10);
+
+        registerPage.openRegisterPage();
+
+        registerPage.submitRegistrationForm("", faker.name().lastName(), email, password, password);
+
+        assertThat(registerPage.fieldErrorMessages()).containsExactly("Informe o nome.");
+        assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
 }
