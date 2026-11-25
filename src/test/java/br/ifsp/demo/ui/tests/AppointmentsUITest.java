@@ -55,6 +55,7 @@ public class AppointmentsUITest extends BaseSeleniumTest {
         assertThat(detailsPage.appointmentOrigin()).isEqualTo("Pronto atendimento");
     }
 
+    @Test
     @DisplayName("shouldOpenScheduledAppointmentWithNewAnimal")
     void shouldOpenScheduledAppointmentWithNewAnimal() {
         appointmentPage.selectScheduledAppointment();
