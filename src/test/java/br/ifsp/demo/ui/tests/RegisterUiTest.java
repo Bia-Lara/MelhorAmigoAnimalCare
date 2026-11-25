@@ -134,13 +134,21 @@ public class RegisterUiTest extends BaseSeleniumTest {
     @DisplayName("Should reject without password")
     void shouldRejectWithoutPassword() {
         String email = faker.internet().emailAddress();
-        String password = faker.internet().password(6, 10);
 
         registerPage.openRegisterPage();
 
-    registerPage.submitRegistrationForm(faker.name().firstName(), faker.name().lastName(), email, "","");
+        registerPage.submitRegistrationForm(faker.name().firstName(), faker.name().lastName(), email, "","");
 
         assertThat(registerPage.fieldErrorMessages()).containsExactly("Informe a senha.");
         assertThat(registerPage.currentUrl()).endsWith("/registrar");
+    }
+
+    @Test
+    @DisplayName("Should navigate to login page")
+    void shouldNavigateToLoginPage() {
+        registerPage.navigateToLoginPage();
+
+        assertThat(registerPage.currentUrl()).endsWith("/login");
+
     }
 }

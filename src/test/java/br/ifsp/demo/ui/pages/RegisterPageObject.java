@@ -19,6 +19,7 @@ public class RegisterPageObject extends BasePageObject {
     private final By registerButton = By.cssSelector("form button[type='submit']");
     private final By fieldErrors = By.cssSelector(".field__error");
     private final By registerError = By.cssSelector(".alert--error");
+    private final By loginLink = By.linkText("Entrar");
 
     public RegisterPageObject(WebDriver driver){
         super(driver);
@@ -71,5 +72,11 @@ public class RegisterPageObject extends BasePageObject {
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(registerError))
                 .getText();
+    }
+
+    public void navigateToLoginPage(){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(loginLink))
+                .click();
     }
 }
