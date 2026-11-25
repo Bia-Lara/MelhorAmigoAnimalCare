@@ -1,12 +1,20 @@
 package br.ifsp.demo.ui.tests;
 
 import br.ifsp.demo.ui.base.BaseSeleniumTest;
+import br.ifsp.demo.ui.base.ViewportsProvider;
 import br.ifsp.demo.ui.pages.LoginPageObject;
 import br.ifsp.demo.ui.pages.RegisterPageObject;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -142,5 +150,17 @@ public class RegisterUiTest extends BaseSeleniumTest {
 
         assertThat(registerPage.currentUrl()).endsWith("/login");
 
+    }
+
+    @ParameterizedTest(name = "{0} ({1}x{2})")
+    @ArgumentsSource(ViewportsProvider.class)
+    @DisplayName("shouldDisplayRegisterFormWithoutHorizontalScroll")
+    void shouldDisplayRegisterFormWithoutHorizontalScroll(String device, int width, int height) {
+        registerPage.emulateViewport(width, height);
+
+        assertThat(registerPage.isFormFullyVisible()).isTrue();
+        assertThat(registerPage.hasHorizontalScroll())
+                .as("scroll horizontal em " + device)
+                .isFalse();
     }
 }

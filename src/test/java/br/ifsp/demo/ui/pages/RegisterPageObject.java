@@ -1,6 +1,7 @@
 package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
+import br.ifsp.demo.ui.base.ViewportSupport;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,8 +22,11 @@ public class RegisterPageObject extends BasePageObject {
     private final By registerError = By.cssSelector(".alert--error");
     private final By loginLink = By.linkText("Entrar");
 
+    private final ViewportSupport viewport;
+
     public RegisterPageObject(WebDriver driver){
         super(driver);
+        this.viewport = new ViewportSupport(driver);
     }
 
     public void openRegisterPage(){
@@ -72,6 +76,22 @@ public class RegisterPageObject extends BasePageObject {
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(registerError))
                 .getText();
+    }
+
+    public boolean isFormFullyVisible(){
+        return driver.findElements(By.cssSelector("form input[name]"))
+                .stream()
+                .allMatch(WebElement::isDisplayed)
+                && driver.findElement(registerButton).isDisplayed();
+    }
+
+    public void emulateViewport(int width, int height){
+        viewport.emulate(width, height);
+        openRegisterPage();
+    }
+
+    public boolean hasHorizontalScroll(){
+        return viewport.hasHorizontalScroll();
     }
 
     public void navigateToLoginPage(){

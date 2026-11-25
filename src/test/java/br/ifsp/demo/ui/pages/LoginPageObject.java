@@ -1,9 +1,8 @@
 package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import br.ifsp.demo.ui.base.ViewportSupport;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -19,8 +18,11 @@ public class LoginPageObject extends BasePageObject {
     private final By registerLink = By.linkText("Cadastre-se");
     private final By successMessage = By.cssSelector(".alert--success");
 
+    private final ViewportSupport viewport;
+
     public LoginPageObject(WebDriver driver){
         super(driver);
+        this.viewport = new ViewportSupport(driver);
     }
 
     public void openLoginPage(){
@@ -90,5 +92,37 @@ public class LoginPageObject extends BasePageObject {
         return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(successMessage))
                 .getText();
+    }
+
+    public boolean isEmailFieldDisplayed() {
+        return driver.findElement(emailInput).isDisplayed();
+    }
+
+    public boolean isPasswordFieldDisplayed() {
+        return driver.findElement(passwordInput).isDisplayed();
+    }
+
+    public boolean isLoginButtonDisplayed() {
+        return driver.findElement(loginButton).isDisplayed();
+    }
+
+    public boolean isRegisterLinkDisplayed() {
+        return driver.findElement(registerLink).isDisplayed();
+    }
+
+    public void emulateViewport(int width, int height) {
+        viewport.emulate(width, height);
+        openLoginPage();
+    }
+
+    public boolean isFormFullyVisible(){
+        return driver.findElements(By.cssSelector("form input[name]"))
+                .stream()
+                .allMatch(WebElement::isDisplayed)
+                && driver.findElement(registerLink).isDisplayed();
+    }
+
+    public boolean hasHorizontalScroll(){
+        return viewport.hasHorizontalScroll();
     }
 }

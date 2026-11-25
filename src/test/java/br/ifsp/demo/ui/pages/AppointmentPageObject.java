@@ -1,6 +1,7 @@
 package br.ifsp.demo.ui.pages;
 
 import br.ifsp.demo.ui.base.BasePageObject;
+import br.ifsp.demo.ui.base.ViewportSupport;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -24,8 +25,11 @@ public class AppointmentPageObject extends BasePageObject {
     private final By recentEmptyMessage = By.cssSelector(".card .empty");
     private final By clearRecentButton = By.cssSelector(".card__actions button");
 
+    private final ViewportSupport viewport;
+
     public AppointmentPageObject(WebDriver driver){
         super(driver);
+        this.viewport = new ViewportSupport(driver);
     }
 
     public void openAppointmentsPage(){
@@ -143,5 +147,29 @@ public class AppointmentPageObject extends BasePageObject {
         return driver.findElements(recentAppointments)
                 .stream()
                 .map(appointment -> appointment.findElement(By.cssSelector(".mono")).getText()).toList();
+    }
+
+    public void emulateViewport(int width, int height) {
+        viewport.emulate(width, height);
+    }
+
+    public boolean hasHorizontalScroll() {
+        return viewport.hasHorizontalScroll();
+    }
+
+    public boolean isOpenAppointmentButtonDisplayed() {
+        return driver.findElement(openAppointmentButton).isDisplayed();
+    }
+
+    public boolean isSearchInputDisplayed() {
+        return driver.findElement(searchButton).isDisplayed();
+    }
+
+    public boolean isSearchButtonDisplayed() {
+        return driver.findElement(searchButton).isDisplayed();
+    }
+
+    public boolean isRecentCardDisplayed() {
+        return driver.findElement(By.xpath("//*[self::h1 or self::h2 or self::h3][contains(normalize-space(), 'Recentes neste navegador')]")).isDisplayed();
     }
 }
