@@ -90,12 +90,10 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @Test
-    @DisplayName("Should reject without name")
+    @DisplayName("shouldRejectWithoutName")
     void shouldRejectWithoutName() {
         String email = faker.internet().emailAddress();
         String password = faker.internet().password(6, 10);
-
-        registerPage.openRegisterPage();
 
         registerPage.submitRegistrationForm("", faker.name().lastName(), email, password, password);
 
@@ -104,12 +102,10 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @Test
-    @DisplayName("Should reject without sobrenome")
+    @DisplayName("shouldRejectWithoutSobrenome")
     void shouldRejectWithoutSobrenome() {
         String email = faker.internet().emailAddress();
         String password = faker.internet().password(6, 10);
-
-        registerPage.openRegisterPage();
 
         registerPage.submitRegistrationForm(faker.name().firstName(), "", email, password, password);
 
@@ -118,11 +114,9 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @Test
-    @DisplayName("Should reject without email")
+    @DisplayName("shouldRejectWithoutEmail")
     void shouldRejectWithoutEmail() {
         String password = faker.internet().password(6, 10);
-
-        registerPage.openRegisterPage();
 
         registerPage.submitRegistrationForm(faker.name().firstName(), faker.name().lastName(), "", password, password);
 
@@ -131,11 +125,9 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @Test
-    @DisplayName("Should reject without password")
+    @DisplayName("shouldRejectWithoutPassword")
     void shouldRejectWithoutPassword() {
         String email = faker.internet().emailAddress();
-
-        registerPage.openRegisterPage();
 
         registerPage.submitRegistrationForm(faker.name().firstName(), faker.name().lastName(), email, "","");
 
@@ -144,7 +136,7 @@ public class RegisterUiTest extends BaseSeleniumTest {
     }
 
     @Test
-    @DisplayName("Should navigate to login page")
+    @DisplayName("shouldNavigateToLoginPage")
     void shouldNavigateToLoginPage() {
         registerPage.navigateToLoginPage();
 
