@@ -48,4 +48,12 @@ public class AppointmentResponsivenessUiTest extends BaseSeleniumTest {
         assertThat(appointmentPage.isSearchButtonDisplayed()).isTrue();
         assertThat(appointmentPage.isRecentCardDisplayed()).isTrue();
     }
+
+    @ParameterizedTest(name = "[{index}] {0} ({1}x{2})")
+    @ArgumentsSource(ViewportsProvider.class)
+    @DisplayName("shouldNotHaveHorizontalScrollInDifferentViewports")
+    void shouldNotHaveHorizontalScrollInDifferentViewports(String device, int width, int height) {
+        appointmentPage.emulateViewport(width, height);
+        assertThat(appointmentPage.hasHorizontalScroll()).isFalse();
+    }
 }
