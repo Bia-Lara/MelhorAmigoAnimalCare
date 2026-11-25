@@ -379,5 +379,30 @@ class PrescricaoControllerApiTest extends BaseApiIntegrationTest {
             assertThat(lida.getStatus()).isEqualTo(StatusPrescricao.FINALIZADA);
         }
 
+        @Test
+        @DisplayName("Should return 409 when prescription is already cancelled")
+        void shouldReturn409WhenPrescriptionIsAlreadyCancelled() {
+            Atendimento atendimento = EntityBuilder.createCompleteAtendimento();
+            Prescricao prescricao = atendimento.emitirPrescricao(
+                    List.of(EntityBuilder.createRandomItemPrescricao()));
+            prescricao.cancelar();
+            atendimentoRepository.salvar(atendimento);
+
+            given().contentType("application/json").port(port)
+                    .header("Authorization", "Bearer " + token)
+                    .when().patch("/api/v1/atendimentos/" + atendimento.getId().getValue()
+                            + "/prescricoes/" + prescricao.getId().getValue() + "/finalizar")
+                    .then().log().ifValidationFails(LogDetail.BODY)
+                    .statusCode(409)
+                    .contentType(ContentType.JSON)
+                    .body("message", not(emptyOrNullString()));
+
+            Prescricao lida = atendimentoRepository
+                    .buscarUmPorAtendimentoId(atendimento.getId())
+                    .getPrescricoes().getFirst();
+
+            assertThat(lida.getStatus()).isEqualTo(StatusPrescricao.CANCELADA);
+        }
+
     }
 }
