@@ -417,5 +417,33 @@ class SqliteAtendimentoRepositoryPersistenceTest {
         assertThat(lido.getStatus()).isEqualTo(StatusAtendimento.CANCELADO);
         assertThat(lido.getJustificativa()).isEqualTo("Tutor desistiu");
     }
+
+    @Test
+    void salvar_comDuasPrescricoes_recuperaTodosOsCamposDosItensNaOrdem() {
+        Prescricao primeira = Prescricao.reconstituir(PrescricaoId.novo(),
+                List.of(new ItemPrescricao("Dipirona", 10, "ORAL", "8/8h", 5)),
+                StatusPrescricao.FINALIZADA, LocalDateTime.of(2026, 1, 1, 10, 0));
+        Prescricao segunda = Prescricao.reconstituir(PrescricaoId.novo(),
+                List.of(new ItemPrescricao("Amoxicilina", 20, "IV", "12/12h", 7)),
+                StatusPrescricao.CANCELADA, LocalDateTime.of(2026, 1, 2, 11, 30));
+        Atendimento original = Atendimento.reconstituir(AtendimentoId.novo(), novoAnimal(), null,
+                StatusAtendimento.EM_ANDAMENTO, LocalDateTime.now(), null, null, null, null,
+                List.of(), List.of(primeira, segunda), List.of());
+        repository.salvar(original);
+
+        List<Prescricao> lidas = repository.buscarUmPorAtendimentoId(original.getId()).getPrescricoes();
+
+        assertThat(lidas).extracting(Prescricao::getId).containsExactly(primeira.getId(), segunda.getId());
+        assertThat(lidas).extracting(Prescricao::getStatus)
+                .containsExactly(StatusPrescricao.FINALIZADA, StatusPrescricao.CANCELADA);
+        assertThat(lidas.get(1).getDataHoraEmissao()).isEqualTo(LocalDateTime.of(2026, 1, 2, 11, 30));
+
+        ItemPrescricao item = lidas.get(1).getItens().getFirst();
+        assertThat(item.getMedicamento()).isEqualTo("Amoxicilina");
+        assertThat(item.getDosagem()).isEqualTo(20);
+        assertThat(item.getVia()).isEqualTo("IV");
+        assertThat(item.getFrequencia()).isEqualTo("12/12h");
+        assertThat(item.getDiasDuracao()).isEqualTo(7);
+    }
 }
 
