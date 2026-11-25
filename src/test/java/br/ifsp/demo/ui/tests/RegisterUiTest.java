@@ -163,4 +163,19 @@ public class RegisterUiTest extends BaseSeleniumTest {
                 .as("scroll horizontal em " + device)
                 .isFalse();
     }
+
+    @ParameterizedTest(name = "{0} ({1}x{2})")
+    @ArgumentsSource(ViewportsProvider.class)
+    @DisplayName("shouldShowRequiredMessagesInDifferentViewports")
+    void shouldShowRequiredMessagesInDifferentViewports(String device, int width, int height) {
+        registerPage.emulateViewport(width, height);
+
+        registerPage.clickRegister();
+
+        assertThat(registerPage.fieldErrorMessages()).containsExactly(
+                "Informe o nome.",
+                "Informe o sobrenome.",
+                "Informe o e-mail.",
+                "Informe a senha.");
+    }
 }
