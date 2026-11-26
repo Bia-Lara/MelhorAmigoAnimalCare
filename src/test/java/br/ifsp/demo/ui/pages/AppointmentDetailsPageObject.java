@@ -555,13 +555,13 @@ public class AppointmentDetailsPageObject extends BasePageObject {
 
         String dateLabel = date.format(
                 DateTimeFormatter.ofPattern(
-                        "EEEe, d 'de' MMMM 'de' yyyy",
+                        "EEE, d 'de' MMMM 'de' yyyy",
                         Locale.forLanguageTag("pt-BR")
                 )
         );
 
         By dateButton = By.xpath(
-                "//div[@role='dialog']//button[@aria-label='\" + dateLabel + \"']"
+                "//div[@role='dialog']//button[@aria-label='" + dateLabel + "']"
         );
 
         return driver.findElements(dateButton).stream()
